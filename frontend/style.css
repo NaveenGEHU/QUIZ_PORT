@@ -1,0 +1,126 @@
+#popUp
+{
+    margin:auto;
+    margin-top: 7%;
+    padding:1%;
+    background-color: #fcfcfc;
+    border-radius: 10px;
+    width:30%;
+    height: 300px;
+    input
+        {
+            width: 30%;;
+        }
+    button{
+      
+        width: 80px;
+    }
+}
+body{
+    background: #f0f2f5;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px; /* Use a more standard base font size */
+    text-align: center;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+/* General container for login, registration, and test creation forms */
+.login_container,
+.registration_container,
+#createquestion_container
+{
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 40px;
+    background-color: #ffffff;
+    display: inline-block;
+    margin-top: 40px;
+    text-align: left; /* Align form content to the left */
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
+}
+
+/* form {
+    display: flex;
+    flex-direction: column;
+} */
+
+label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#student_button,#previous_button,#next_button,
+#teacher_button
+{
+    background-color: #156ed3;
+    color: white;
+    /* padding: 12px 20px; */
+    /* margin: 10px 0; */
+    width: 20%;
+    height: 40px;
+    border: none;
+    margin: 2%;
+   
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+button
+{
+    background-color: #156ed3;
+    color: white;
+    /* padding: 12px 20px; */
+    /* margin: 10px 0; */
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+}
+button:hover,previous_button:hover,next_button:hover,
+#student_button:hover,
+#teacher_button:hover {
+    background-color: #5f99db;
+
+}
+
+
+#previous_button,#next_button{
+    margin-top: 500px;
+}
+#taking_test_container{
+    margin: auto;
+    /* padding-left: 50px;
+    padding-bottom: 10px;
+    padding-right:10px ;
+    padding-top:10px; */
+    background: #bde4f8;
+    height: 600px;
+    width: 1000px;
+}

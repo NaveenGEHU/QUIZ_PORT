@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login_container">
+        <h1>View Results</h1>
+        <form onsubmit="event.preventDefault(); loadresult();">
+            <label for="testkey">Test Key</label>
+        <select>
+            <option>Sorting Method</option>
+            <option>SECTION</option>
+            <option>MARKS</option>
+        </select>
+            
+            <input type="text" id="testkey" required> 
+            <button type="button" onclick="sort()">DISPALAY</form>button>
+        </form>
+    </div>
+<script src="app.js"></script>   
+</body>

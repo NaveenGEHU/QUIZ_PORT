@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="createquestion_container">
+        <h1>Create a New Test</h1>
+        <form id="add_question_form">
+            <label for="question">Question</label>
+            <input placeholder="Enter Question" id="question" type="text" required>
+            <label for="opt1">Option A</label><input placeholder="Enter Option" id="opt1" type="text" required>
+            <label for="opt2">Option B</label><input placeholder="Enter Option" id="opt2" type="text" required>
+            <label for="opt3">Option C</label><input placeholder="Enter Option" id="opt3" type="text" required>
+            <label for="opt4">Option D</label><input placeholder="Enter Option" id="opt4" type="text" required>
+            <label for="correct_opt">Correct Option</label>
+            <input id="correct_opt" placeholder="Answer - A, B, C or D" type="text" required>
+            <button id="add_question_button" type="submit">Add Question</button>
+        </form>
+        <button id="create_test_button" >Create Test</button>
+
+    </div>
+   <script src="app.js"></script>
+</body>
+</html>

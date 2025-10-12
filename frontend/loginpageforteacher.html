@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+<div class ="login_container">
+    <h1>Teacher Login</h1>
+    <form id ="teacher_login_form" onsubmit="event.preventDefault();" >
+    <label for="login_teacher_email">Email Address </label>     
+    <input id="login_teacher_email" type="email" required>
+    <label for="login_teacher_password" >Password</label>
+    <input id="login_teacher_password" type="password" required>
+    <button id="login_button" type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="registrationpageforteacher.html">Register</a></p>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
