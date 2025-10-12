@@ -11,13 +11,14 @@
         <h1>View Results</h1>
         <form onsubmit="event.preventDefault(); loadresult();">
             <label for="testkey">Test Key</label>
-        <select>
+        
+            
+            <input type="text" id="testkey" required> 
+            <select id="sortingDrawer">
             <option>Sorting Method</option>
             <option>SECTION</option>
             <option>MARKS</option>
-        </select>
-            
-            <input type="text" id="testkey" required> 
+            </select>
             <button type="button" onclick="sort()">DISPALAY</form>button>
         </form>
     </div>

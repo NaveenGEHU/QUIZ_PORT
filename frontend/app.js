@@ -40,22 +40,19 @@ if (stop) {
         else {
             element=document.getElementById('createquestion_container');
             element.innerHTML=`
-            <link rel="stylesheet" href="style.css" >
-            <div id="popUp" >
-            <h1>CREATE TEST KEY  </h1>
+            <h1>CREATE TEST KEY</h1>
             <form id ="createTestKey">
             <label for="testkey">Enter to make an identification for test</label><br>
             <input type="text" id="testkey" placeholder="eg. English test 1" required><br>
             <button type="submit" id="confirm_button">Confirm </button>
-        </form>
-    </div>`
+        </form> `
     const test_key_trigger = document.getElementById('createTestKey');
     if (test_key_trigger) {
     test_key_trigger.addEventListener('submit', function (e) {
         e.preventDefault();
         current_test_key = document.getElementById('testkey').value.trim();
         savetest();
-        // openPage('teacherdashboard.html');
+        openPage('teacherdashboard.html');
     });
     }
         }
@@ -331,8 +328,36 @@ function teacher_validate_login() {
 }
 // console.log(teachers[i]);
 
+const startTest=document.getElementById('student_test_taking');
+if(startTest)
+{
+startTest.addEventListener('submit',function(e)
+{   
+    e.preventDefault();
+    current_test_key=document.getElementById.value.trim();
+    loadtest();
+}
+ ) ;
+}
 
-function loadtest() { }
+
+function loadtest() {
+    element=document.getElementById('student_test_taking');
+    key=new FormData();
+    key.append('key',current_test_key);
+    fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/fetch_question.php'
+        ,{method:'Post',body:key}
+        // Currently key is send at backend to check if the table exite -   ------->>>>. fetch quesion;
+    );    element.innerHTML=`
+    <div id = "taking_test_container">
+    <input class  = "option" type="radio" ><div></div><br>
+    <input class  = "option" type="radio" ><div></div><br>
+    <input class  = "option" type="radio" ><div></div><br>
+    <input class  = "option" type="radio" ><div></div><br>
+    <button id="previous_button" >Previous</button>
+    <button id="next_button" >Next</button>
+</div>`
+ }
 function loadresult() { }
 function sortbysection() { sortbymarks(); }
 function sortbymarks() { }
