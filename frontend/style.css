@@ -31,6 +31,7 @@ h1 {
     margin-bottom: 25px;
 }
 
+
 /* General container for login, registration, and test creation forms */
 .login_container,
 .registration_container,
@@ -47,11 +48,6 @@ h1 {
     max-width: 450px;
     box-sizing: border-box;
 }
-
-/* form {
-    display: flex;
-    flex-direction: column;
-} */
 
 label {
     margin-bottom: 8px;
@@ -70,6 +66,7 @@ input[type="email"] {
     width: 100%;
     box-sizing: border-box;
 }
+
 
 #student_button,#previous_button,#next_button,
 #teacher_button
@@ -138,12 +135,44 @@ button:hover,previous_button:hover,next_button:hover,
     margin-top: 500px;
 }
 #taking_test_container{
+button
+{
+    margin-right: 10px;   
+}
     margin: auto;
+    border-radius: 11px;
     /* padding-left: 50px;
     padding-bottom: 10px;
     padding-right:10px ;
     padding-top:10px; */
-    background: #bde4f8;
-    height: 600px;
-    width: 1000px;
+    border-style:groove;
+    background: #12121200;
+    width:85%;
 }
+
+
+/* 
+    #question{
+        #statement{
+            margin: auto;
+            height: 100px;
+            width:1400px;
+            background: #4a4a4f;
+            margin-top: 100px;
+        }
+        border-style:groove ;
+        background: #ffffff;
+        border-radius: 10px;
+        width: 99%;
+        height: 10%;
+     
+        #previous_button
+        {
+            margin-right: 900px;
+        }
+        button{
+            
+            height:44px;
+            width: 13%;
+        }
+    } */

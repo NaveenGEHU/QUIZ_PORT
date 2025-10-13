@@ -3,12 +3,14 @@ function openPage(url) {
     window.location.href = url;
 }
 let current_test_key='';
+let Test = null;
+let currentquestion=null;
 //---------------------------- getting ending of the test creation trigger------------------------------------------------
 
 
- function savetest() {
+ async function savetest() {
     while (Test != null) {
-        console.log(Test.statement,Test.optionA,Test.optionB,Test.optionC,Test.optionD,Test.answer);
+        // console.log(Test.statement,Test.optionA,Test.optionB,Test.optionC,Test.optionD,Test.answer);
         const questionData = new FormData();
         questionData.append('key', current_test_key);
         questionData.append('statement', Test.statement);
@@ -18,7 +20,7 @@ let current_test_key='';
         questionData.append('opt4', Test.optionD);
         questionData.append('answer', Test.answer);
 
-         fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/create_test.php',
+        await fetch('http://localhost/myprojects/GIT/PBL_DS/server/create_test.php',
             {
                 method: 'Post', body: questionData
             });
@@ -80,23 +82,23 @@ function addquestion() {
     const opt4 = document.getElementById("opt4").value;
     const ans = document.getElementById("correct_opt").value;
     if (!Test) {
-        Test = new Question(statement, opt1, opt2, opt3, opt4, ans);
+        Test = new Question("",statement, opt1, opt2, opt3, opt4, ans);
         return;
     }
     let last = Test;
     while (last.next != null) {
         last = last.next;
     }
-    last.next = new Question(statement, opt1, opt2, opt3, opt4, ans);
+    last.next = new Question("",statement, opt1, opt2, opt3, opt4, ans);
     last.next.prev = last;
     document.getElementById("add_question_form").reset();
 }
 let students = [];
 let teachers = [];
 
-let Test = null;
 //--------------------------Question Class------------------------------
 class Question {
+    qno="";
     statement = "";
     optionA = "";
     optionB = "";
@@ -105,7 +107,8 @@ class Question {
     answer = "";
     next = null;
     prev = null;
-    constructor(statement, optionA, optionB, optionC, optionD, answer) {
+    constructor(qno="",statement, optionA, optionB, optionC, optionD, answer) {
+        this.qno=qno;
         this.statement = statement;
         this.optionA = optionA;
         this.optionB = optionB;
@@ -147,6 +150,7 @@ class student {
     section;
     course;
     rollno;
+    marks=0;
     constructor(id, name, password, section, course, rollno) {
         this.id = id;
         this.name = name;
@@ -160,7 +164,7 @@ class student {
 //----------------------FETCHING TEACHER DATA-----------------------------------------------------------
 
 
-fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/fetchdb_teacher.php')
+fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetchdb_teacher.php')
     .then(response_teacher => {
         if (!response_teacher.ok) {
             throw new Error("UNABLE TO FETCH DATA FROM DATABASE" + response.statusText);
@@ -178,7 +182,7 @@ fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/fet
     );
 
 // ---------------- FETCH STUDENT DATA FROM DATABASE ----------------
-fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/fetch_dbstudent.php')   // ✅ fixed path
+fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_dbstudent.php')   // ✅ fixed path
     .then(response => {
         if (!response.ok) {
             throw new Error("UNABLE TO FETCH DATA FROM DATABASE" + response.statusText);
@@ -240,7 +244,7 @@ function registerStudent() {
     formData.append('rollno', newrollno);
 
     // Send data to PHP
-    fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/register_student.php', {   // ✅ fixed path
+    fetch('http://localhost/myprojects/GIT/PBL_DS/server/register_student.php', {   // ✅ fixed path
         method: 'POST',
         body: formData
     })
@@ -303,7 +307,7 @@ function teacher_register() {
     postform.append('email', teacher_email);
     postform.append('password', teacher_pass);
     //SENDING TO PHP
-    fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/register_teacher.php', { method: 'POST', body: postform })
+    fetch('http://localhost/myprojects/GIT/PBL_DS/server/register_teacher.php', { method: 'POST', body: postform })
         .then(res_reg_teacher => res_reg_teacher.text())
         .then(res_reg_teacher => {
             alert(res_reg_teacher);
@@ -328,38 +332,171 @@ function teacher_validate_login() {
 }
 // console.log(teachers[i]);
 
+
+//---------------------------------------------------- LOADING THE TEST---------------------------------------------------------------------- 
+
 const startTest=document.getElementById('student_test_taking');
 if(startTest)
-{
+{                                                               // ADD INNER HTML HERE TO EDIT AND STYLR QUESTION APPERARANCE
 startTest.addEventListener('submit',function(e)
 {   
     e.preventDefault();
-    current_test_key=document.getElementById.value.trim();
-    loadtest();
-}
- ) ;
+    current_test_key=document.getElementById('testkey').value.trim();
+    if(current_test_key)
+        { 
+            loadtest(Test);
+        }
+});
 }
 
 
-function loadtest() {
+async function loadtest(Test) {
     element=document.getElementById('student_test_taking');
     key=new FormData();
     key.append('key',current_test_key);
-    fetch('http://localhost/myprojects/Quiz_creating_and_sorting_platfrom/server/fetch_question.php'
+    await fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_question.php'
         ,{method:'Post',body:key}
-        // Currently key is send at backend to check if the table exite -   ------->>>>. fetch quesion;
-    );    element.innerHTML=`
-    <div id = "taking_test_container">
-    <input class  = "option" type="radio" ><div></div><br>
-    <input class  = "option" type="radio" ><div></div><br>
-    <input class  = "option" type="radio" ><div></div><br>
-    <input class  = "option" type="radio" ><div></div><br>
-    <button id="previous_button" >Previous</button>
+    )
+    .then(response => {
+        // if(!response.ok)
+        // {
+        //     throw new Error(response.statusText);
+        // }
+        // console.log(response.json());
+        return response.json();
+    })
+    .then( data=>
+    {
+        // console.log(data);
+        let curr,row;
+        for(let i=0 ;i<data.length;i++)
+        {   
+            row=data[i];
+            const ques= new Question(row.id, row.statement , row.opt1 , row.opt2 , row.opt3  , row.opt4 , row.answer ); 
+            if(Test==null)
+            {
+                Test=ques;
+                curr=Test;
+            }
+            else{
+                curr.next=new Question(row.id ,row.statement,row.opt1,row.opt2,row.opt3,row.opt4,row.answer);
+                curr.next.prev=curr;
+                curr=curr.next;
+            }
+        }
+        currentquestion=Test;
+        displayQuestion();
+    });
+    // .catch(error =>
+    // {
+    //     console.error("Error",error);
+    // });
+}
+
+function displayQuestion() 
+{   
+    console.log("THIS IS IN CURRNT QUES\n");
+    console.log(currentquestion);
+    element=document.getElementById('page');
+    // preventDefault();
+    element.innerHTML=`
+    <div id = "question">
+    <div id="statement"> ${currentquestion.qno}${currentquestion.statement}</div>
+    <label><input class  = "option"  name="response" id="A" type="radio" >${currentquestion.optionA} <div></div></label><br>
+    <label><input class  = "option"  name="response" id="B" type="radio" >${currentquestion.optionB }<div></div></label><br>
+    <label><input class  = "option"  name="response" id="C" type="radio" >${currentquestion.optionC }<div></div></label><br>
+    <label><input class  = "option"  name="response" id="D" type="radio" >${currentquestion.optionD }<div></div></label><br>
+    <button id="previous_button">Previous</button>
     <button id="next_button" >Next</button>
-</div>`
- }
-function loadresult() { }
-function sortbysection() { sortbymarks(); }
-function sortbymarks() { }
+    <button id="endTest"> Submit</button>
+    </div>
+      `;
+      nextbttn=document.getElementById('next_button');
+    if(nextbttn)
+    {
+        nextbttn.addEventListener('click',function(e){
+            e.preventDefault();
+            if(currentquestion.next)
+            {
+                currentquestion=currentquestion.next;
+            }
+            else{
+                alert("LAST QUESTION");
+            }
+            displayQuestion();
+        });
+    }
+
+    previousbttn=document.getElementById('previous_button');
+        if(previousbttn){
+        previousbttn.addEventListener('click',function(e){
+        e.preventDefault();
+        if(!currentquestion.prev)
+        {
+            alert("1st Question !");
+        }
+        else{
+            
+            currentquestion=currentquestion.prev;
+            displayQuestion();
+            }
+        });
+    }
+}
+    
+// TEST DISPLAY NHI HORA HAI console pe hor ahai
+
+// function nextQuestion()
+// {
+//     currentquestion=currentquestion.next;
+// }
+// function previousQuestion()
+// {
+//     currentquestion=currentquestion.prev;
+// }
 
 /* */
+arr=[]             // student array after fetching the marks from database;
+sectionArr = [];// global array 
+function sortBySection(arr, section) {
+    // Step 1: Collect students of that section
+    
+    let count = 0;
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].section === section) {
+            sectionArr[count] = arr[i];
+            count++;
+        }
+    }
+
+    // Step 2: Sort sectionArr by roll number ascending
+    quickSort(sectionArr, 0, sectionArr.length - 1, "rollno", "asc");
+}
+
+
+function quickSort(arr, low, high, key, order) {
+    if (low < high) {
+        let pi = partition(arr, low, high, key, order);
+        quickSort(arr, low, pi - 1, key, order);
+        quickSort(arr, pi + 1, high, key, order);
+    }
+}
+
+function partition(arr, low, high, key, order) {
+    let pivot = arr[high][key];
+    let i = low - 1;
+    for (let j = low; j <= high - 1; j++) {
+        let condition = (order === "desc") ? (arr[j][key] >= pivot) : (arr[j][key] <= pivot);
+        if (condition) {
+            i++;
+            let temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    let temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return i + 1;
+}
+
