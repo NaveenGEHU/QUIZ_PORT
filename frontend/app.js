@@ -2,9 +2,13 @@
 function openPage(url) {
     window.location.href = url;
 }
+// let resss
 let current_test_key='';
 let Test = null;
 let currentquestion=null;
+let activeStudent;
+let ans_resp=[];
+
 //---------------------------- getting ending of the test creation trigger------------------------------------------------
 
 
@@ -28,7 +32,11 @@ let currentquestion=null;
     }
 }
 
-
+function saveActiveStudent(a)
+{
+    activeStudent=a;
+    localStorage.setItem('activeStudent',JSON.stringify(activeStudent));
+}
 
 
 //-----------------------Creating test----------------------------------
@@ -150,7 +158,7 @@ class student {
     section;
     course;
     rollno;
-    marks=0;
+    marks;
     constructor(id, name, password, section, course, rollno) {
         this.id = id;
         this.name = name;
@@ -207,6 +215,12 @@ if (studentregister) {
     });
 }
 
+// const studentbutton=document.getElementById("student_button");
+// if(studentbutton)
+// {
+//     studentbutton.addEventListener('oncl')
+// }
+
 const event_teacher_register = document.querySelector('#teacher_registration_form');
 if (event_teacher_register) {
     event_teacher_register.addEventListener('submit', function (e) {
@@ -223,7 +237,6 @@ function registerStudent() {
     const newsec = document.getElementById("reg_student_section").value.trim();
     const newcourse = document.getElementById("reg_student_course").value.trim();
     const newrollno = document.getElementById("reg_student_roll").value.trim();
-
     const new_student = new student(newid, newname, newpass, newsec, newcourse, newrollno);
 
     // Check duplicates in local JS array
@@ -247,16 +260,17 @@ function registerStudent() {
     fetch('http://localhost/myprojects/GIT/PBL_DS/server/register_student.php', {   // ✅ fixed path
         method: 'POST',
         body: formData
-    })
-        .then(res => res.text())
-        .then(result => {
-            alert(result);
+    });
+        // .then(res => res.text())
+        // .then(result => {
+        //     alert(result);
 
             students.push(new_student);
             document.getElementById('student_registration_form').reset();
+            saveActiveStudent(new_student);
             openPage('studentdashboard.html');
-        })
-        .catch(err => console.error('Error:', err));
+        // })
+        // .catch(err => console.error('Error:', err));
 }
 
 // ---------------- LOGIN VALIDATION ----------------
@@ -273,6 +287,7 @@ function student_validate_login() {
     let login_pass = document.getElementById('student_password').value.trim();
     for (let i = 0; i < students.length; i++) {
         if (login_id == students[i].id && login_pass == students[i].password) {
+            saveActiveStudent(students[i]);
             openPage('studentdashboard.html');
             return;
         }
@@ -350,7 +365,7 @@ startTest.addEventListener('submit',function(e)
 }
 
 
-async function loadtest(Test) {
+async function loadtest() {
     element=document.getElementById('student_test_taking');
     key=new FormData();
     key.append('key',current_test_key);
@@ -369,11 +384,12 @@ async function loadtest(Test) {
     {
         // console.log(data);
         let curr,row;
-        for(let i=0 ;i<data.length;i++)
+        let i;
+        for( i=0 ;i<data.length;i++)
         {   
             row=data[i];
             const ques= new Question(row.id, row.statement , row.opt1 , row.opt2 , row.opt3  , row.opt4 , row.answer ); 
-            if(Test==null)
+            if(Test===null)
             {
                 Test=ques;
                 curr=Test;
@@ -385,6 +401,11 @@ async function loadtest(Test) {
             }
         }
         currentquestion=Test;
+        activeStudent=JSON.parse(localStorage.getItem('activeStudent'));
+        ans_resp=Array(i).fill(null);
+        console.log("LEMGHT OF ARRAY OF NASWER :",ans_resp.length);
+        console.log("ARRAY  content  :",ans_resp);
+        console.log("Student her is:",activeStudent);
         displayQuestion();
     });
     // .catch(error =>
@@ -392,7 +413,7 @@ async function loadtest(Test) {
     //     console.error("Error",error);
     // });
 }
-
+// let responses=[];
 function displayQuestion() 
 {   
     console.log("THIS IS IN CURRNT QUES\n");
@@ -401,28 +422,40 @@ function displayQuestion()
     // preventDefault();
     element.innerHTML=`
     <div id = "question">
-    <div id="statement"> ${currentquestion.qno}${currentquestion.statement}</div>
-    <label><input class  = "option"  name="response" id="A" type="radio" >${currentquestion.optionA} <div></div></label><br>
-    <label><input class  = "option"  name="response" id="B" type="radio" >${currentquestion.optionB }<div></div></label><br>
-    <label><input class  = "option"  name="response" id="C" type="radio" >${currentquestion.optionC }<div></div></label><br>
-    <label><input class  = "option"  name="response" id="D" type="radio" >${currentquestion.optionD }<div></div></label><br>
+    <div id="statement"> ${currentquestion.qno} ) ${currentquestion.statement}</div>
+    <label><input class  = "option"  name="response_answer" value ='A'  type="radio" required >${currentquestion.optionA} <div></div></label><br>
+    <label><input class  = "option"  name="response_answer" value ='B'  type="radio" required>${currentquestion.optionB }<div></div></label><br>
+    <label><input class  = "option"  name="response_answer" value ='C'  type="radio" required>${currentquestion.optionC }<div></div></label><br>
+    <label><input class  = "option"  name="response_answer" value ='D'  type="radio" required>${currentquestion.optionD }<div></div></label><br>
     <button id="previous_button">Previous</button>
     <button id="next_button" >Next</button>
     <button id="endTest"> Submit</button>
     </div>
       `;
-      nextbttn=document.getElementById('next_button');
+      //--------------------------------END TEST TRIGGEER---------------------
+    calc_marks_trigger =document.getElementById('endTest');
+    if(calc_marks_trigger)
+    {
+        
+        calc_marks_trigger.addEventListener('click',function(e)
+        {
+            e.preventDefault();
+            SaveResponse();
+            CalculateMarks(Test);
+            element.innerHTML=`
+                <h1> TEST HAS BEEN SUBMITTED</h1><br>
+                <h2> Your Score :${activeStudent.marks}</h2>
+            `;
+            return;   
+        });
+    }
+    nextbttn=document.getElementById('next_button');
     if(nextbttn)
     {
         nextbttn.addEventListener('click',function(e){
             e.preventDefault();
-            if(currentquestion.next)
-            {
-                currentquestion=currentquestion.next;
-            }
-            else{
-                alert("LAST QUESTION");
-            }
+            SaveResponse();
+            nextQuestion();
             displayQuestion();
         });
     }
@@ -430,64 +463,213 @@ function displayQuestion()
     previousbttn=document.getElementById('previous_button');
         if(previousbttn){
         previousbttn.addEventListener('click',function(e){
-        e.preventDefault();
-        if(!currentquestion.prev)
+            e.preventDefault();
+            SaveResponse();
+            previousQuestion();
+            displayQuestion();
+            });
+        }
+    
+}
+
+function CalculateMarks(temp)
+{   activeStudent.marks=0;
+    if(temp===null)
+    {
+        console.log("NO QUESTIONS HERE");
+    }
+    for(let i=0 ;i<ans_resp.length && temp!==null ;i++)
+    {
+        if((ans_resp[i]) && ans_resp[i]===temp.answer)
+        {
+            activeStudent.marks=activeStudent.marks+1;
+        }
+        temp=temp.next;
+    }
+    console.log("Marks of this student is ",activeStudent.marks); /// delet
+    console.log("Answr array insde aray ",ans_resp);                            //delte
+    SaveMarks();
+}
+
+function SaveMarks()
+{
+    const studentresultform= new FormData();
+    studentresultform.append('key',current_test_key);
+    studentresultform.append('name',activeStudent.name);
+    studentresultform.append('id',activeStudent.id);
+    studentresultform.append('section',activeStudent.section);
+    studentresultform.append('course',activeStudent.course);
+    studentresultform.append('rollno',activeStudent.rollno);
+    studentresultform.append('marks',activeStudent.marks);
+    fetch('http://localhost/myprojects/GIT/PBL_DS/server/send_marks.php',{method:'Post',body:studentresultform});
+}
+
+function nextQuestion()
+{
+    
+    if(currentquestion.next)
+            {
+                currentquestion=currentquestion.next;
+            }
+            else{
+                alert("LAST QUESTION");
+            }
+}
+function previousQuestion()
+{
+     if(!currentquestion.prev)
         {
             alert("1st Question !");
         }
         else{
-            
             currentquestion=currentquestion.prev;
-            displayQuestion();
-            }
-        });
-    }
+        }
 }
-    
-// TEST DISPLAY NHI HORA HAI console pe hor ahai
-
-// function nextQuestion()
-// {
-//     currentquestion=currentquestion.next;
-// }
-// function previousQuestion()
-// {
-//     currentquestion=currentquestion.prev;
-// }
-
-/* */
-arr=[]             // student array after fetching the marks from database;
-sectionArr = [];// global array 
-function sortBySection(arr, section) {
-    // Step 1: Collect students of that section
-    
-    let count = 0;
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].section === section) {
-            sectionArr[count] = arr[i];
-            count++;
+function SaveResponse()
+{
+    let index= currentquestion.qno-1;
+    allOptions= document.getElementsByName('response_answer');
+    for(let a=0;a<allOptions.length;a++)
+    {
+        if(allOptions[a].checked  == true)
+        {
+            ans_resp[index]=allOptions[a].value;
+            break;
         }
     }
+}
 
-    // Step 2: Sort sectionArr by roll number ascending
-    quickSort(sectionArr, 0, sectionArr.length - 1, "rollno", "asc");
+const result_trigger=document.getElementById('result');
+if(result_trigger)
+{
+    result_trigger.addEventListener('submit',function(e){
+    e.preventDefault();
+    const testkey=document.getElementById('testkey').value.trim();
+    const sorttype=document.getElementById('sortingDrawer').value;
+    const sectionslected=document.getElementById('section').value.trim();
+    const courseselected=document.getElementById('course').value.trim();
+    if(testkey =='')
+    {
+        alert("No test key found!");
+        return;
+    }
+    current_test_key=testkey;
+    if(sorttype==='')
+    {
+         alert("A sorting method must be selcted!");
+         return;
+    }
+    if ( sorttype==="sectionwise" && (courseselected==='' || sectionslected===''   ))
+    {
+        alert("section and couse feild cant be empty is also required");
+        return;
+    } 
+    sortAndDisplay(sorttype, sectionslected, courseselected);
+    });
+}
+
+async function sortAndDisplay(sorttype, sectionslected, courseselected)
+{
+    await fetchResult();
+    if(sorttype=="markswise")
+    {
+        quickSortMarks(studentsresult,0,studentsresult.length-1);
+        console.log("Sorted by marks:",studentsresult );
+        displayResult(studentsresult);
+    }
+    else if(sorttype=="sectionwise")
+    {
+        sortedbysection = [];
+        for (let i = 0; i < studentsresult.length; i++) {
+            if (studentsresult[i].section === sectionslected && studentsresult[i].course === courseselected) {
+                sortedbysection.push(studentsresult[i]);
+            }
+        }
+        quickSortRollNo(sortedbysection, 0, sortedbysection.length - 1);
+        console.log("Sorted by section and rollno:", sortedbysection);
+        displayResult(sortedbysection);
+    }
+}
+let studentsresult=[];
+let sortedbymarks=[];
+let sortedbysection=[];
+function displayResult(arr)
+{
+    console.log("Inside display :",arr);
+    page=document.getElementById('fullpage');
+    let table=`
+    <h1></h1>
+    <table class="styled-table" >
+    <thead>
+        <tr>
+            <th> Student id </th>
+            <th> Name </th>
+            <th> Section </th>
+            <th> Course </th>
+            <th> Class Roll no </th>
+            <th> Marks </th>
+        </tr>
+    </thead>
+    <tbody>`;
+    for(let i=0; i<arr.length ;i++)
+    {
+    table+=`
+    <tr>
+        <td>${arr[i].id}</td>
+        <td>${arr[i].name}</td>
+        <td>${arr[i].section}</td>
+        <td>${arr[i].course}</td>
+        <td>${arr[i].rollno}</td>
+        <td>${arr[i].marks}</td>
+    </tr>
+    `;
+    }
+    table+=`</tbody></table>`;
+    page.innerHTML=table;
+
 }
 
 
-function quickSort(arr, low, high, key, order) {
+
+async function fetchResult()
+{   
+    const form=new FormData();
+    form.append('key',current_test_key);
+    await fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_marks.php',{method:'Post',body:form})
+    .then(
+        response=>{
+            return response.json();
+        })
+        .then(data=>{
+        console.log("RaR Data :",data);
+        studentsresult=[];
+        for(let i=0;i<data.length;i++)
+        {
+            studentsresult.push(data[i]);
+        }
+    });
+}
+/*  .then(response => {
+        // if(!response.ok)
+        // {
+        //     throw new Error(response.statusText);
+        // }
+        // console.log(response.json());
+        return response.json(); */
+
+function quickSortMarks(arr, low, high) {
     if (low < high) {
-        let pi = partition(arr, low, high, key, order);
-        quickSort(arr, low, pi - 1, key, order);
-        quickSort(arr, pi + 1, high, key, order);
+        let pi = partitionMarks(arr, low, high);
+        quickSortMarks(arr, low, pi - 1);
+        quickSortMarks(arr, pi + 1, high);
     }
 }
 
-function partition(arr, low, high, key, order) {
-    let pivot = arr[high][key];
+function partitionMarks(arr, low, high) {
+    let pivot = arr[high].marks;
     let i = low - 1;
     for (let j = low; j <= high - 1; j++) {
-        let condition = (order === "desc") ? (arr[j][key] >= pivot) : (arr[j][key] <= pivot);
-        if (condition) {
+        if (arr[j].marks >= pivot) {  // descending
             i++;
             let temp = arr[i];
             arr[i] = arr[j];
@@ -499,4 +681,80 @@ function partition(arr, low, high, key, order) {
     arr[high] = temp;
     return i + 1;
 }
+
+// ----------------- QuickSort for rollno -----------------
+function quickSortRollNo(arr, low, high) {
+    if (low < high) {
+        let pi = partitionRollNo(arr, low, high);
+        quickSortRollNo(arr, low, pi - 1);
+        quickSortRollNo(arr, pi + 1, high);
+    }
+}
+
+function partitionRollNo(arr, low, high) {
+    let pivot = arr[high].rollno;
+    let i = low - 1;
+    for (let j = low; j <= high - 1; j++) {
+        if (arr[j].rollno <= pivot) { // ascending
+            i++;
+            let temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    let temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return i + 1;
+}
+
+
+
+
+
+
+
+
+/* */
+// function sortBySection(arr, section) {
+//     // Step 1: Collect students of that section
+    
+//     let count = 0;
+//     for (let i = 0; i < arr.length; i++) {
+//         if (arr[i].section === section) {
+//             sectionArr[count] = arr[i];
+//             count++;
+//         }
+//     }
+
+//     // Step 2: Sort sectionArr by roll number ascending
+//     quickSort(sectionArr, 0, sectionArr.length - 1, "rollno", "asc");
+// }
+
+
+// function quickSort(arr, low, high, key, order) {
+//     if (low < high) {
+//         let pi = partition(arr, low, high, key, order);
+//         quickSort(arr, low, pi - 1, key, order);
+//         quickSort(arr, pi + 1, high, key, order);
+//     }
+// }
+
+// function partition(arr, low, high, key, order) {
+//     let pivot = arr[high][key];
+//     let i = low - 1;
+//     for (let j = low; j <= high - 1; j++) {
+//         let condition = (order === "desc") ? (arr[j][key] >= pivot) : (arr[j][key] <= pivot);
+//         if (condition) {
+//             i++;
+//             let temp = arr[i];
+//             arr[i] = arr[j];
+//             arr[j] = temp;
+//         }
+//     }
+//     let temp = arr[i + 1];
+//     arr[i + 1] = arr[high];
+//     arr[high] = temp;
+//     return i + 1;
+// }
 
