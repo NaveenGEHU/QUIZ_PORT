@@ -598,9 +598,10 @@ function displayResult(arr)
     console.log("Inside display :",arr);
     page=document.getElementById('fullpage');
     let table=`
-    <h1></h1>
+    <h1 id="tablehead" > Score:  ${current_test_key}</h1>
     <table class="styled-table" >
     <thead>
+   
         <tr>
             <th> Student id </th>
             <th> Name </th>
@@ -646,6 +647,7 @@ async function fetchResult()
         for(let i=0;i<data.length;i++)
         {
             studentsresult.push(data[i]);
+            studentsresult[i].rollno=Number(studentsresult[i].rollno);
         }
     });
 }
@@ -707,54 +709,3 @@ function partitionRollNo(arr, low, high) {
     arr[high] = temp;
     return i + 1;
 }
-
-
-
-
-
-
-
-
-/* */
-// function sortBySection(arr, section) {
-//     // Step 1: Collect students of that section
-    
-//     let count = 0;
-//     for (let i = 0; i < arr.length; i++) {
-//         if (arr[i].section === section) {
-//             sectionArr[count] = arr[i];
-//             count++;
-//         }
-//     }
-
-//     // Step 2: Sort sectionArr by roll number ascending
-//     quickSort(sectionArr, 0, sectionArr.length - 1, "rollno", "asc");
-// }
-
-
-// function quickSort(arr, low, high, key, order) {
-//     if (low < high) {
-//         let pi = partition(arr, low, high, key, order);
-//         quickSort(arr, low, pi - 1, key, order);
-//         quickSort(arr, pi + 1, high, key, order);
-//     }
-// }
-
-// function partition(arr, low, high, key, order) {
-//     let pivot = arr[high][key];
-//     let i = low - 1;
-//     for (let j = low; j <= high - 1; j++) {
-//         let condition = (order === "desc") ? (arr[j][key] >= pivot) : (arr[j][key] <= pivot);
-//         if (condition) {
-//             i++;
-//             let temp = arr[i];
-//             arr[i] = arr[j];
-//             arr[j] = temp;
-//         }
-//     }
-//     let temp = arr[i + 1];
-//     arr[i + 1] = arr[high];
-//     arr[high] = temp;
-//     return i + 1;
-// }
-
