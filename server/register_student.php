@@ -1,12 +1,12 @@
 <?php
 // header('Content-Type: application/json');
 include 'conn.php';
-$id = isset($_POST['id']) ? mysqli_real_escape_string($conn, $_POST['id']) : '';
-$name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
-$password = isset($_POST['password']) ? mysqli_real_escape_string($conn, $_POST['password']) : '';
-$section = isset($_POST['section']) ? mysqli_real_escape_string($conn, $_POST['section']) : '';
-$course = isset($_POST['course']) ? mysqli_real_escape_string($conn, $_POST['course']) : '';
-$rollno = isset($_POST['rollno']) ? mysqli_real_escape_string($conn, $_POST['rollno']) : '';
+$id = $_POST['id'];
+$name = $_POST['name'];
+$password = $_POST['password'];
+$section = $_POST['section'] ;
+$course = $_POST['course'];
+$rollno = $_POST['rollno'];
 if($id ==='' || $name ==='' ||   $password ==='' || $section ==='' ||  $course ==='' ||  $rollno ==='' )
 {
     exit;

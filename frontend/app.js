@@ -12,23 +12,26 @@ let ans_resp=[];
 //---------------------------- getting ending of the test creation trigger------------------------------------------------
 
 
- async function savetest() {
-    while (Test != null) {
+async function savetest() {
+    let questionNode= Test;
+    while (questionNode != null) {
         // console.log(Test.statement,Test.optionA,Test.optionB,Test.optionC,Test.optionD,Test.answer);
         const questionData = new FormData();
         questionData.append('key', current_test_key);
-        questionData.append('statement', Test.statement);
-        questionData.append('opt1', Test.optionA);
-        questionData.append('opt2', Test.optionB);
-        questionData.append('opt3', Test.optionC);
-        questionData.append('opt4', Test.optionD);
-        questionData.append('answer', Test.answer);
+        questionData.append('statement', questionNode.statement);
+        questionData.append('opt1', questionNode.optionA);
+        questionData.append('opt2', questionNode.optionB);
+        questionData.append('opt3', questionNode.optionC);
+        questionData.append('opt4', questionNode.optionD);
+        questionData.append('answer', questionNode.answer);
 
-        await fetch('http://localhost/myprojects/GIT/PBL_DS/server/create_test.php',
+        const res =await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/create_test.php',
             {
                 method: 'Post', body: questionData
             });
-        Test = Test.next;
+            const text = await res.text();
+            console.log("Saving question:", questionNode.statement, "=>", text);
+        questionNode = questionNode.next;
     }
 }
 
@@ -58,10 +61,11 @@ if (stop) {
         </form> `
     const test_key_trigger = document.getElementById('createTestKey');
     if (test_key_trigger) {
-    test_key_trigger.addEventListener('submit', function (e) {
+    test_key_trigger.addEventListener('submit', async function (e) {
         e.preventDefault();
         current_test_key = document.getElementById('testkey').value.trim();
-        savetest();
+        await savetest();
+        alert("Test saved successfully!");
         openPage('teacherdashboard.html');
     });
     }
@@ -172,40 +176,26 @@ class student {
 //----------------------FETCHING TEACHER DATA-----------------------------------------------------------
 
 
-fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetchdb_teacher.php')
+fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetchdb_teacher.php')
     .then(response_teacher => {
-        if (!response_teacher.ok) {
-            throw new Error("UNABLE TO FETCH DATA FROM DATABASE" + response.statusText);
-        }
+
         return response_teacher.json();
     })
     .then(data_teacher => {
         // console.log("Raw data from PHP:", data_teacher);
         teachers = data_teacher.map(row_teacher => new teacher(row_teacher.name, row_teacher.email, row_teacher.password));
-    }
-    )
-    .catch(error_teacher => {
-        console.error("Error fetching data:", error_teacher);
-    }
-    );
+    }    );
 
 // ---------------- FETCH STUDENT DATA FROM DATABASE ----------------
-fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_dbstudent.php')   // ✅ fixed path
+fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_dbstudent.php')   // ✅ fixed path
     .then(response => {
-        if (!response.ok) {
-            throw new Error("UNABLE TO FETCH DATA FROM DATABASE" + response.statusText);
-        }
         return response.json();
     })
     .then(data => {
         // console.log("Raw data from PHP:", data);
 
         students = data.map(row => new student(row.id, row.name, row.password, row.section, row.course, row.rollno));
-    })
-    .catch(error => {
-        console.error("Error fetching data:", error);
-    }
-    );
+    });
 // ---------------- ADD EVENT LISTENER ----------------
 const studentregister = document.querySelector('#student_registration_form');
 if (studentregister) {
@@ -238,11 +228,53 @@ function registerStudent() {
     const newcourse = document.getElementById("reg_student_course").value.trim();
     const newrollno = document.getElementById("reg_student_roll").value.trim();
     const new_student = new student(newid, newname, newpass, newsec, newcourse, newrollno);
-
+    if (!newid || !newname || !newpass || !newsec || !newcourse || !newrollno) {
+        alert("All fields are required! ❌");
+        return;
+    }
+     for (let i = 0; i < newid.length; i++) {
+        let c = newid[i];
+        if (!((c >= 0 && c <= 9) )) {
+            alert("Student ID must be numeric!");
+            return;
+        }
+    }
+    for (let i = 0; i < newname.length; i++) {
+        let c = newname[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ')) {
+            alert("Name can only contain letters and spaces!");
+            return;
+        }
+    }
+    if (newpass.length < 6) {
+        alert("Password must be at least 6 characters!");
+        return;
+    }
+    for (let i = 0; i < newrollno.length; i++) {
+        let c = newrollno[i];
+        if (!(c >= 0 && c <= 9 ))
+        {
+            alert("Roll number must be numeric!");
+            return;
+        }
+    }
+       if (newpass.length < 6) {
+        alert("Password must be at least 6 characters!");
+        return;
+    }
+    
+    // ---------------- DUPLICATE CHECK ----------------
+    for (let i = 0; i < students.length; i++) {
+        if (students[i].id == newid || 
+            (students[i].rollno == newrollno && students[i].section == newsec && students[i].course == newcourse)) {
+            alert("❌ REGISTRATION FAILED: ACCOUNT ALREADY EXISTS!");
+            return;
+        }
+    }
     // Check duplicates in local JS array
     for (let i = 0; i < students.length; i++) {
         if (students[i].id == newid || (students[i].rollno == newrollno && students[i].section == newsec && students[i].course == newcourse)) {
-            alert("❌ REGISTRATION FAILED: ACCOUNT ALREADY EXISTS!");
+            alert(" REGISTRATION FAILED ! : ACCOUNT ALREADY EXISTS!");
             return;
         }
     }
@@ -257,7 +289,7 @@ function registerStudent() {
     formData.append('rollno', newrollno);
 
     // Send data to PHP
-    fetch('http://localhost/myprojects/GIT/PBL_DS/server/register_student.php', {   // ✅ fixed path
+    fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_student.php', {   // ✅ fixed path
         method: 'POST',
         body: formData
     });
@@ -286,7 +318,11 @@ function student_validate_login() {
     let login_id = document.getElementById('student_id').value.trim();
     let login_pass = document.getElementById('student_password').value.trim();
     for (let i = 0; i < students.length; i++) {
-        if (login_id == students[i].id && login_pass == students[i].password) {
+        if (login_id == students[i].id && login_pass != students[i].password) {
+            alert("Incorrect Password");
+            return;
+        }
+        else if (login_id == students[i].id && login_pass == students[i].password) {
             saveActiveStudent(students[i]);
             openPage('studentdashboard.html');
             return;
@@ -322,15 +358,10 @@ function teacher_register() {
     postform.append('email', teacher_email);
     postform.append('password', teacher_pass);
     //SENDING TO PHP
-    fetch('http://localhost/myprojects/GIT/PBL_DS/server/register_teacher.php', { method: 'POST', body: postform })
-        .then(res_reg_teacher => res_reg_teacher.text())
-        .then(res_reg_teacher => {
-            alert(res_reg_teacher);
+    fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_teacher.php', { method: 'POST', body: postform });
             teachers.push(newteacher);
             document.getElementById("teacher_registration_form").reset();
             openPage("teacherdashboard.html");
-        })
-        .catch(error_for_teacher => console.error("ERROR", error_for_teacher));
 }
 
 
@@ -338,6 +369,11 @@ function teacher_validate_login() {
     const login_teacher_eamil = document.getElementById("login_teacher_email").value.trim();
     const login_teacher_pass = document.getElementById("login_teacher_password").value.trim();
     for (let i = 0; i < teachers.length; i++) {
+        if (teachers[i].teacher_email == login_teacher_eamil && teachers[i].teacher_password != login_teacher_pass) {
+            alert("Incorret Password");
+            return;
+        }
+
         if (teachers[i].teacher_email == login_teacher_eamil && teachers[i].teacher_password == login_teacher_pass) {
             openPage("teacherdashboard.html");
             return;
@@ -353,28 +389,40 @@ function teacher_validate_login() {
 const startTest=document.getElementById('student_test_taking');
 if(startTest)
 {                                                               // ADD INNER HTML HERE TO EDIT AND STYLR QUESTION APPERARANCE
-startTest.addEventListener('submit',function(e)
+startTest.addEventListener('submit',async function(e)
 {   
     e.preventDefault();
     current_test_key=document.getElementById('testkey').value.trim();
-    if(current_test_key)
-        { 
-            loadtest(Test);
+    if(current_test_key==="")
+    {
+        alert("TEST KEY CANT BE EMPTY !");
+        return;
+    }
+  
+    else if(current_test_key)
+    {
+        for(let a in current_test_key) {
+            if(a==' ')
+        {
+                alert("No space is accepted!");
+                return;
+            }
         }
-});
-}
+        await loadtest(Test);
+    }
+});}
 
 
 async function loadtest() {
     element=document.getElementById('student_test_taking');
     key=new FormData();
     key.append('key',current_test_key);
-    await fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_question.php'
+    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_question.php'
         ,{method:'Post',body:key}
     )
     .then(response => {
-        // if(!response.ok)
-        // {
+        // if(!resp2onse.ok)
+        // 22221222{
         //     throw new Error(response.statusText);
         // }
         // console.log(response.json());
@@ -408,70 +456,65 @@ async function loadtest() {
         console.log("Student her is:",activeStudent);
         displayQuestion();
     });
-    // .catch(error =>
-    // {
-    //     console.error("Error",error);
-    // });
 }
-// let responses=[];
-function displayQuestion() 
-{   
-    console.log("THIS IS IN CURRNT QUES\n");
-    console.log(currentquestion);
-    element=document.getElementById('page');
-    // preventDefault();
-    element.innerHTML=`
-    <div id = "question">
-    <div id="statement"> ${currentquestion.qno} ) ${currentquestion.statement}</div>
-    <label><input class  = "option"  name="response_answer" value ='A'  type="radio" required >${currentquestion.optionA} <div></div></label><br>
-    <label><input class  = "option"  name="response_answer" value ='B'  type="radio" required>${currentquestion.optionB }<div></div></label><br>
-    <label><input class  = "option"  name="response_answer" value ='C'  type="radio" required>${currentquestion.optionC }<div></div></label><br>
-    <label><input class  = "option"  name="response_answer" value ='D'  type="radio" required>${currentquestion.optionD }<div></div></label><br>
-    <button id="previous_button">Previous</button>
-    <button id="next_button" >Next</button>
-    <button id="endTest"> Submit</button>
+
+
+function displayQuestion() {   
+    element = document.getElementById('page');
+
+    const index = currentquestion.qno - 1; 
+    const previousAnswer = ans_resp[index];
+
+    element.innerHTML = `
+    <div id="question">
+        <div id="statement">${currentquestion.qno}) ${currentquestion.statement}</div>
+        <label><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br>
+        <label><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br>
+        <label><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br>
+        <label><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br>
+        <button id="previous_button">Previous</button>
+        <button id="next_button">Next</button>
+        <button id="endTest">Submit</button>
     </div>
-      `;
-      //--------------------------------END TEST TRIGGEER---------------------
-    calc_marks_trigger =document.getElementById('endTest');
-    if(calc_marks_trigger)
-    {
-        
-        calc_marks_trigger.addEventListener('click',function(e)
-        {
+    `;
+
+    // Rebind buttons after HTML replacement
+    const nextbttn = document.getElementById('next_button');
+    const previousbttn = document.getElementById('previous_button');
+    const calc_marks_trigger = document.getElementById('endTest');
+
+    if (calc_marks_trigger) {
+        calc_marks_trigger.addEventListener('click', function(e) {
             e.preventDefault();
             SaveResponse();
             CalculateMarks(Test);
-            element.innerHTML=`
-                <h1> TEST HAS BEEN SUBMITTED</h1><br>
-                <h2> Your Score :${activeStudent.marks}</h2>
+            element.innerHTML = `
+                <h1>TEST HAS BEEN SUBMITTED</h1><br>
+                <h2>Your Score: ${activeStudent.marks}</h2>
             `;
-            return;   
         });
     }
-    nextbttn=document.getElementById('next_button');
-    if(nextbttn)
-    {
-        nextbttn.addEventListener('click',function(e){
+
+    if (nextbttn) {
+        nextbttn.addEventListener('click', function(e) {
             e.preventDefault();
             SaveResponse();
             nextQuestion();
-            displayQuestion();
+            displayQuestion(); // re-render next question
         });
     }
 
-    previousbttn=document.getElementById('previous_button');
-        if(previousbttn){
-        previousbttn.addEventListener('click',function(e){
+    if (previousbttn) {
+        previousbttn.addEventListener('click', function(e) {
             e.preventDefault();
             SaveResponse();
             previousQuestion();
-            displayQuestion();
-            });
-        }
-    
+            displayQuestion(); // re-render previous question
+        });
+    }
 }
 
+//---------------calc marks----------------
 function CalculateMarks(temp)
 {   activeStudent.marks=0;
     if(temp===null)
@@ -501,7 +544,7 @@ function SaveMarks()
     studentresultform.append('course',activeStudent.course);
     studentresultform.append('rollno',activeStudent.rollno);
     studentresultform.append('marks',activeStudent.marks);
-    fetch('http://localhost/myprojects/GIT/PBL_DS/server/send_marks.php',{method:'Post',body:studentresultform});
+    fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/send_marks.php',{method:'Post',body:studentresultform});
 }
 
 function nextQuestion()
@@ -525,6 +568,7 @@ function previousQuestion()
             currentquestion=currentquestion.prev;
         }
 }
+
 function SaveResponse()
 {
     let index= currentquestion.qno-1;
@@ -636,7 +680,7 @@ async function fetchResult()
 {   
     const form=new FormData();
     form.append('key',current_test_key);
-    await fetch('http://localhost/myprojects/GIT/PBL_DS/server/fetch_marks.php',{method:'Post',body:form})
+    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_marks.php',{method:'Post',body:form})
     .then(
         response=>{
             return response.json();
@@ -647,18 +691,12 @@ async function fetchResult()
         for(let i=0;i<data.length;i++)
         {
             studentsresult.push(data[i]);
-            studentsresult[i].rollno=Number(studentsresult[i].rollno);
+            studentsresult[i].rollno = Number(String(studentsresult[i].rollno).trim()) || 0;
+            studentsresult[i].marks = Number(String(studentsresult[i].marks).trim()) || 0;
         }
     });
 }
-/*  .then(response => {
-        // if(!response.ok)
-        // {
-        //     throw new Error(response.statusText);
-        // }
-        // console.log(response.json());
-        return response.json(); */
-
+//---------------------------Sorting------------------------------------
 function quickSortMarks(arr, low, high) {
     if (low < high) {
         let pi = partitionMarks(arr, low, high);

@@ -1,6 +1,6 @@
 <?php
     include 'conn.php';
-    $key=isset($_POST['key']) ? $_POST['key'] : '';
+    $key=$_POST['key'];
     if($key==='')
     {
         exit;
@@ -10,7 +10,7 @@
     $result=mysqli_query($conn,$query);
     if(!($result &&  $result->num_rows>0  ))
     {
-        echo "INVALID TEST KEY ";
+        imap_alerts("INVALID TEST KEY ",$key) ;
         exit;
     }
     while($row = $result->fetch_assoc())
