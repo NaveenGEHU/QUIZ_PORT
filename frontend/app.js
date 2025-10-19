@@ -464,17 +464,16 @@ function displayQuestion() {
 
     const index = currentquestion.qno - 1; 
     const previousAnswer = ans_resp[index];
-
     element.innerHTML = `
     <div id="question">
         <div id="statement">${currentquestion.qno}) ${currentquestion.statement}</div>
-        <label><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br>
-        <label><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br>
-        <label><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br>
-        <label><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br>
-        <button id="previous_button">Previous</button>
-        <button id="next_button">Next</button>
-        <button id="endTest">Submit</button>
+        <div class="option"><label><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br></div>
+        <div class="option"><label><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br></div>
+        <div class="option"><label><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br></div>
+        <div class="option"><label><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br></div>
+        <button class="allbutton" id="previous_button">Previous</button>
+        <button class="allbutton" id="next_button">Next</button>
+        <button class="allbutton" id="endTest">Submit</button>
     </div>
     `;
 
