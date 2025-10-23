@@ -5,10 +5,15 @@ page.style {
     text-align: center;
     color: #0f6560;
 }
-
+h1#test_key_page {
+    font-family: ui-serif;
+    font-size: 59px;
+    margin: 63px;
+    letter-spacing: 5px;
+}
 
 .option{
-    margin-bottom: 50px;
+    margin-bottom: 25px;
 }
 
 h1#title {
@@ -40,8 +45,9 @@ button#teacher_button {
     color: white;
     font-family: cursive;
     cursor: pointer;
-    margin-left: 676px;
+    width: 14%;
     padding: 6px;
+    margin-left: 651px;
 }
 
 button#student_button {
@@ -50,9 +56,10 @@ button#student_button {
     font-size: 32px;
     background: yellowgreen;
     color: white;
+    width: 14%;
     cursor: pointer;
     font-family: cursive;
-    margin-left: 676px;
+    margin-left: 651px;
     padding: 6px;
 }
 
@@ -72,7 +79,7 @@ div#statement {
     margin-bottom: 40px;
     font-size: 22px;
     font-weight: 530;
-    background: #40e0d0ad;
+    background: #f6fffead;
     border: solid;
     height: max-content;
     width: auto;
@@ -81,28 +88,32 @@ div#statement {
 }
 
 label {
+    outline: 144px;
     cursor: pointer;
     font-size: 22px;
     padding: 7px;
-    background: #40e0d0ad;
-    border: solid;
+    background: #f2f7f7ad;
     border-radius: 10px;
 }
 
 
 div#question {
-    margin-top: 100px;
-    padding: 40px;
-    padding-right: 400px;
+    margin-top: -29px;
+    margin-right: 400px;
+    padding-left: 10%;
+    padding-top: 3%;
 }
 
 button#previous_button,#next_button,#endTest {
-    width: 12%;
-    font-size: 30px;
-    border-radius: 10px;
+    font-family: cursive;
+    padding: 7px;
+    width: 11%;
+    font-size: 23px;
+    border-radius: 27px;
     color: white;
     background: slategrey;
-    height: 45px;
+    height: 55px;
+    border: none;
     cursor: pointer;
     margin-bottom: 0%;
 }
@@ -112,8 +123,9 @@ button#previous_button {margin-left: 2%;}
 button#next_button {margin-left: 70%;}
 
 button#endTest {
-    margin-left: 45%;
-    margin-top: 10%;
+    margin-left: 8%;
+    margin-top: -13%;
+    position: absolute;
 }
 
 tr {background: lightblue;}
@@ -203,7 +215,7 @@ div#teacherdashboard {
     text-align: center;
 }
 
-button#createTestButton,#viewresult {height: 100px;background:#0f558f ;color: azure;width: 22%;padding: 19px;font-family: cursive;margin: 61px;border-radius: 15px;font-size: 46px;}
+button#createTestButton, #viewresultButton {height: 100px;background: coral;color: azure;width: 22%;padding: 19px;font-family: cursive;margin: 61px;border-radius: 15px;font-size: 46px;}
 
 
 
@@ -217,3 +229,206 @@ button {
     cursor: pointer;
 }
 
+
+
+input.option {width: 16px;}
+
+
+div#keyTag {
+    font-family: auto;
+    font-size: 24px;
+    text-align: center;
+}
+
+
+
+
+
+.Stats {
+    div#status {
+    margin-top: 9%;
+    margin-left: 74%;
+    height: 169px;
+    width: 17%;
+    border: solid;
+    text-align: center;
+};
+    div#status {
+    margin-top: 9%;
+    margin-left: 74%;
+    height: 169px;
+    width: 17%;
+    border: solid;
+    text-align: center;
+};
+    div#status {
+    margin-top: 9%;
+    margin-left: 74%;
+    height: 169px;
+    width: 17%;
+    border: solid;
+    text-align: center;
+};
+    div#status {
+    margin-top: 9%;
+    margin-left: 74%;
+    height: 169px;
+    width: 17%;
+    border: solid;
+    text-align: center;
+};
+    
+    width: 15%;height: 34%;/* border: solid; */margin-top: 9%;padding: 2%;margin-left: 75%;position: absolute;
+    
+}
+
+
+p#head {
+    font-size: 46px;
+    margin-top: -5%;
+    font-family: system-ui;
+    font-weight: 700;
+}
+
+
+p#ans {
+    color: green;
+}
+
+p#unans {
+    color: red;
+}
+
+
+
+input#testkey {
+    margin-top: 10px;
+    width: 27%;
+    height: 43px;
+}
+
+button#start_button {
+    color: white;
+    background-color: #057093;
+    border: none;
+    border-radius: 7px;
+    font-size: 27px;
+    padding: 9px;
+    width: 13%;
+}
+
+input#question {
+    width: -webkit-fill-available;
+    padding: 16px;
+}
+
+form#add_question_form {padding: 2%;}
+
+
+h1#testCreation {
+    text-align: center;
+    font-family: serif;
+    font-size: 39px;
+}
+
+
+select#sortingDrawer {
+    font-family: cursive;
+    padding: 2px;
+    text-align: center;
+    width: 21%;
+    font-size: 36px;
+    color: white;
+    background-color: cadetblue;
+    border: none;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+button.allbutton {
+    color: snow;
+    height: 50px;
+    font-size: 27px;
+    border: none;
+    width: 28%;
+    border-radius: 16px;
+    font-family: cursive;
+    background-color: #b1b1ba;
+}
+
+
+button#showresultButton {
+    width: 14%;
+    background: cadetblue;
+    height: 51px;
+}
+
+h1#afterSubmit {
+    text-align: center;
+    padding: 14%;
+}
+
+button#showresultButton:hover {
+    color: #000000ab;
+    background: #5f9ea075;
+}
+
+select#sortingDrawer:hover {
+    color: #000000ab;
+    background: #5f9ea075;
+}
+
+button#createTestButton:hover,button#viewresultButton:hover {background-color: #ff7f505c;color: #00000085;}
+
+input#opt1,input#opt2,input#opt3,input#opt4 {width: 90%;padding: 0px;height: 43px;}
+
+
+button#add_question_button {
+    margin-left: 37%;
+    width: 20%;
+    background-color: #226b6d;
+}
+
+button#create_test_button {
+    background: red;
+    position: absolute;
+    margin-left: 84%;
+    margin-top: -41%;
+    width: 13%;
+}
+
+button#create_test_button:hover {
+    color: #0000009e;
+    background-color: #ff000094;
+}
+
+button#add_question_button:hover {
+    color: #000000a8;
+    background-color: #5f9ea0a8;
+}
+
+button#confirm_button {
+    background-color: #a59c9c;
+    border: none;
+    padding: 10px;
+    font-size: 23px;
+    border-radius: 12px;
+    color: white;
+}
+
+
+
+
+button#start_button:hover {color: #f0ebeb;background-color: #51d0fa;}
+
+div#container {
+    display: none;
+    padding: 21px;
+    text-align: center;
+    margin-top: 10%;
+    margin-left: 31%;
+    border-radius: 20px;
+    border: solid;
+    width: 34%;
+    height: 323px;
+}

@@ -51,14 +51,17 @@ if (stop) {
             alert("Error ! Test can't be empty add questions to create a test ");
         }
         else {
-            element=document.getElementById('createquestion_container');
+            prev=document.getElementById('createquestion_container');
+            prev.style.display='none';
+            element=document.getElementById('container');
+            element.style.display='block';
             element.innerHTML=`
             <h1>CREATE TEST KEY</h1>
             <form id ="createTestKey">
             <label for="testkey">Enter to make an identification for test</label><br>
             <input type="text" id="testkey" placeholder="eg. English test 1" required><br>
             <button type="submit" id="confirm_button">Confirm </button>
-        </form> `
+        </form> `;
     const test_key_trigger = document.getElementById('createTestKey');
     if (test_key_trigger) {
     test_key_trigger.addEventListener('submit', async function (e) {
@@ -459,24 +462,43 @@ async function loadtest() {
 }
 
 
-function displayQuestion() {   
+function displayQuestion() {    
+    let attempt=0;
+    let unattempt=0;
+    for(let i=0;i<ans_resp.length;i++)
+    {
+        if(ans_resp[i])
+            attempt++;
+        else    
+            unattempt++;
+    }
     element = document.getElementById('page');
-
+    // AtemptStatus=document.getElementById('status');
+    // AtemptStatus.innerHTML=`
+    // <div class="Stats"> Answered : ${attempt}<br>
+    // Unanswered : ${unattempt}</div>
+    // `;
     const index = currentquestion.qno - 1; 
     const previousAnswer = ans_resp[index];
+    Title =document.getElementById('keyTag');
+    Title.innerHTML=`<h1>QUIZ : ${current_test_key}</h1>`;
     element.innerHTML = `
+    <div class="Stats"> <p id ="head">  </p>
+    <p id ="ans">
+    Answered : ${attempt}<br>
+    <p id="unans">
+    Unanswered : ${unattempt}</div>
     <div id="question">
         <div id="statement">${currentquestion.qno}) ${currentquestion.statement}</div>
-        <div class="option"><label><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br></div>
-        <div class="option"><label><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br></div>
-        <div class="option"><label><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br></div>
-        <div class="option"><label><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br></div>
+        <div class="option"><label class="opt_text"><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br></div>
+        <div class="option"><label class="opt_text" ><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br></div>
+        <div class="option"><label class="opt_text" ><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br></div>
+        <div class="option"><label class="opt_text" ><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br></div>
         <button class="allbutton" id="previous_button">Previous</button>
         <button class="allbutton" id="next_button">Next</button>
         <button class="allbutton" id="endTest">Submit</button>
     </div>
     `;
-
     // Rebind buttons after HTML replacement
     const nextbttn = document.getElementById('next_button');
     const previousbttn = document.getElementById('previous_button');
@@ -488,8 +510,7 @@ function displayQuestion() {
             SaveResponse();
             CalculateMarks(Test);
             element.innerHTML = `
-                <h1>TEST HAS BEEN SUBMITTED</h1><br>
-                <h2>Your Score: ${activeStudent.marks}</h2>
+                <h1 id ='afterSubmit' >Your response has been submitted .</h1><br>
             `;
         });
     }
@@ -639,7 +660,7 @@ let sortedbysection=[];
 function displayResult(arr)
 {
     console.log("Inside display :",arr);
-    page=document.getElementById('fullpage');
+    page=document.getElementById('viewpage');
     let table=`
     <h1 id="tablehead" > Score:  ${current_test_key}</h1>
     <table class="styled-table" >
