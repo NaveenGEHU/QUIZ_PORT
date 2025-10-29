@@ -92,7 +92,6 @@ label {
     cursor: pointer;
     font-size: 22px;
     padding: 7px;
-    background: #f2f7f7ad;
     border-radius: 10px;
 }
 
@@ -380,12 +379,13 @@ select#sortingDrawer:hover {
 
 button#createTestButton:hover,button#viewresultButton:hover {background-color: #ff7f505c;color: #00000085;}
 
-input#opt1,input#opt2,input#opt3,input#opt4 {width: 90%;padding: 0px;height: 43px;}
+input#opt1,input#opt2,input#opt3,input#opt4 {width: 90%;padding: 0px;height: 43px;margin: 10px;}
 
 
-button#add_question_button {
+#add_question_button {
     margin-left: 37%;
     width: 20%;
+    margin-top: 15px;
     background-color: #226b6d;
 }
 
@@ -431,4 +431,14 @@ div#container {
     border: solid;
     width: 34%;
     height: 323px;
+}
+
+input.question-correct-answer {
+    margin: 0px;
+    width: 88px;
+    height: 24px;
+    padding: 0px;
+}
+
+input#correct_optA {
 }

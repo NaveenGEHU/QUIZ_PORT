@@ -10,7 +10,7 @@
     $result=mysqli_query($conn,$query);
     if(!($result &&  $result->num_rows>0  ))
     {
-        imap_alerts("INVALID TEST KEY ",$key) ;
+        echo json_encode("Test not found!");
         exit;
     }
     while($row = $result->fetch_assoc())
