@@ -135,7 +135,7 @@ table.styled-table {
 
 
 h1#tablehead {
-    color: silver;
+    color: #000000;
     font-family: ui-monospace;
     text-align: center;
     font-size: 50px;
@@ -302,7 +302,7 @@ p#unans {
 
 input#testkey {
     margin-top: 10px;
-    width: 27%;
+    width: 18%;
     height: 43px;
 }
 
@@ -440,5 +440,78 @@ input.question-correct-answer {
     padding: 0px;
 }
 
-input#correct_optA {
+#reg_student_course {
+    font-size: 23px;
+    border-radius: 6px;
+    padding: 6px;
+    font-family: cursive;
+}
+#TestKeyBox {
+    position: absolute;
+}  
+
+.key-table th {
+  background-color: #f61515;
+  color: white;
+  padding: 12px 15px;
+  text-align: left;
+font-family:sans-serif;
+}
+
+.key-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.key-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.key-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.key-table tbody tr:hover {
+  background-color: #ddd;
+}
+
+
+
+.styled-table {
+    border-collapse:collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    text-align:center;
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+    background-color: #f3f3f3;
 }

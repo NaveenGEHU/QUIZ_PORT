@@ -4,7 +4,6 @@ include 'conn.php';
 $teacher_email=$_POST['teacher_email'];
 if( $teacher_email=='')
 {
-    echo "Key can't be empty";
     exit;
 }
 

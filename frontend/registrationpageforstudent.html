@@ -19,7 +19,18 @@
     <label class ="INPUT" for="reg_student_roll">Class Roll Number</label><br>
     <input id="reg_student_roll" type="number" required><br>
     <label class ="INPUT" for="reg_student_course">Course</label><br>
-    <input id="reg_student_course" type="text" required><br>
+    <select id="reg_student_course" type="text" required>
+        <option value="NONE"> -SELECT  </option>
+        <option value="BVoc"> BVoc  </option>
+        <option value="LLB"> LLB  </option>
+        <option value="BSC"> BSC  </option>
+        <option value="BTech"> BTech  </option>
+        <option value="MCA"> MCA  </option>
+        <option value="MBA"> MBA  </option>
+        <option value="BBA"> BBA  </option>
+        <option value="BCom"> BCom  </option>
+        <option value="BCA"> BCA  </option>
+    </select><br> 
     <label class ="INPUT" for="reg_student_password" >Password</label><br>
     <input id="reg_student_password" type="password" required><br>
     <button class="allbutton" id="registration_button" type="submit">Register</button>

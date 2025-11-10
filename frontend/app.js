@@ -104,42 +104,59 @@ if (stop) {
 
 
 // ------------------- DISPLAY TEST KEYS ----------------
-function showTestKeys() {    //------------------------------------TO BE COMPLETED 
+async function showTestKeys() {    //------------------------------------TO BE COMPLETED 
     activeTeacher = JSON.parse(localStorage.getItem('activeTeacher'));
     const teacheremail = new FormData();
     teacheremail.append('teacher_email', activeTeacher.teacher_email);
 
     // Fetch all test keys for the logged-in teacher
-    fetch("http://localhost/myprojects/GIT/QUIZ_PORT/server/getTestKeys.php", {
+    let response = await fetch("http://localhost/myprojects/GIT/QUIZ_PORT/server/getTestKeys.php", {
         method: 'Post', 
         body: teacheremail
-    })
-    .then(response => response.json())
-    .then(data => {
-        for (let i = 0; i < data.length; i++) {
-            testKeys[i] = data[i];
-            console.log("RAW DATA:", data[i]);
-            console.log("Test KEYS:", testKeys[i]);
-        }
     });
+    console.log("RESPONSE:", response);
+    let data=[];
+    data=await response.json();
+    console.log("DATA:", data);
+    // let textInside= await response.text();
+    // if(!textInside)
+    // {
+    //     alert("No test keys found!");
+    //     return;
+    // }
+    // console.log("TEST KEY AYEGI");
+    // console.log("RAW DATA:", data);
+    // data =await JSON.parse(textInside);
+    for (let i = 0; i < data.length; i++) {
+        testKeys[i] = data[i].test_created;
+            }
+ 
+   
+}
 
-    // Render test keys table
-    const TestKeyData = document.getElementById('TestKeyBox');
-    TestKeyData.innerHTML = `
+// --------------------------Render test keys table--------------------------
+const TestKeyData =  document.getElementById('TestKeyBox');
+if(TestKeyData){
+    showTestKeys().then( ()=>{
+    let Table= `
     <table class="key-table">
     <thead>
-        <tr id="key-head">
-            <th>Test Keys</th>
-        </tr>
+    <tr id="key-head">
+        <th>Name of Test</th>
+    </tr>
     </thead>
     <tbody>
-        `;
-
-    for (let i = 0; i < testKeys.length; i++) {
-        TestKeyData.innerHTML += `<tr>${testKeys[i]}</tr>`;   
+    `;
+    console.log("TEST KEYS:", testKeys);
+    for( let a of testKeys )
+    {
+        Table+= `<tr><td> ${a}</td></tr>`;
     }
-
-    TestKeyData.innerHTML += `</tbody></table>`;
+   
+    // console.log("test key lenght = " , testKeys.lenght);
+    Table+= `</tbody></table>`;
+    TestKeyData.innerHTML=Table;
+    });
 }
 
 // ------------------- COUNT QUESTIONS ----------------
@@ -305,6 +322,7 @@ async function registerStudent() {
     const newpass = document.getElementById("reg_student_password").value.trim();
     const newsec = document.getElementById("reg_student_section").value.trim();
     const newcourse = document.getElementById("reg_student_course").value.trim();
+    console.log("COUSRSE",newcourse);
     const newrollno = document.getElementById("reg_student_roll").value.trim();
 
     const new_student = new student(newid, newname, newpass, newsec, newcourse, newrollno);
@@ -504,30 +522,40 @@ if (startTest) {  // ----------------------------YAHA PE SELCET DRWAER TO  SELCE
     });
 }
 
+
+
 // ------------------- LOAD TEST QUESTIONS ----------------
+
 async function loadtest() {
     element = document.getElementById('student_test_taking');
     const key = new FormData();
     key.append('key', current_test_key);
-
-    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_question.php', {
+    let response=await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_question.php', {
         method: 'POST',
         body: key
-    })
-    .then(response => response.json())
-    .then(data => {
+    });
+    let text= await response.text();
+    if (!text) {
+    alert("Enter correct test key ! ");
+    return;
+}
+    let data=[];
+    data=await JSON.parse(text)
+    // data=await response.json();
+    console.log(data);     
+  
         let curr, row;
         let i;
         for (i = 0; i < data.length; i++) {
             row = data[i];
-            const ques = new Question(row.id, row.statement, row.opt1, row.opt2, row.opt3, row.opt4, row.answer);
+            const ques = new Question(row.q_no, row.statement, row.opt1, row.opt2, row.opt3, row.opt4, row.answer);
             
             // ---------------- BUILD LINKED LIST OF QUESTIONS ----------------
             if (Test === null) {
                 Test = ques;
                 curr = Test;
             } else {
-                curr.next = new Question(row.id, row.statement, row.opt1, row.opt2, row.opt3, row.opt4, row.answer);
+                curr.next = ques;
                 curr.next.prev = curr;
                 curr = curr.next;
             }
@@ -538,19 +566,22 @@ async function loadtest() {
         // ---------------- INITIALIZE STUDENT DATA AND RESPONSE ARRAY ----------------
         activeStudent = JSON.parse(localStorage.getItem('activeStudent'));
         ans_resp = Array(i).fill(null);
-        console.log("Response array length:", ans_resp.length);
+        console.log("Response array length:", ans_resp.length);                  //      testing
+        console.log("QUESTIONS :",Test);
         displayQuestion();
-    });
-}
+    }
+
+
 
 // ------------------- DISPLAY CURRENT QUESTION ----------------
 function displayQuestion() {
+    console.log("responses : ",ans_resp);                  ///                       testing 
     let attempt = 0;
     let unattempt = 0;
 
     // ---------------- CALCULATE ATTEMPTED/UNATTEMPTED ----------------
     for (let i = 0; i < ans_resp.length; i++) {
-        if (ans_resp[i]) attempt++;
+        if (ans_resp[i]!=null) attempt++;
         else unattempt++;
     }
 
@@ -599,7 +630,6 @@ function displayQuestion() {
             e.preventDefault();
             SaveResponse();
             nextQuestion();
-            displayQuestion();
         });
     }
 
@@ -608,7 +638,6 @@ function displayQuestion() {
             e.preventDefault();
             SaveResponse();
             previousQuestion();
-            displayQuestion();
         });
     }
 }
@@ -629,11 +658,15 @@ function SaveResponse() {
 function nextQuestion() {
     if (currentquestion.next) currentquestion = currentquestion.next;
     else alert("LAST QUESTION!");
+            displayQuestion();
+
 }
 
 function previousQuestion() {
     if (!currentquestion.prev) alert("FIRST QUESTION!");
     else currentquestion = currentquestion.prev;
+            displayQuestion();
+
 }
 
 // ------------------- CALCULATE MARKS ----------------
@@ -722,16 +755,22 @@ async function fetchResult() {
     const form = new FormData();
     form.append('key', current_test_key);
 
-    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_marks.php', { method: 'POST', body: form })
-        .then(response => response.json())
-        .then(data => {
-            studentsresult = [];
-            for (let i = 0; i < data.length; i++) {
-                studentsresult.push(data[i]);
-                studentsresult[i].rollno = Number(String(studentsresult[i].rollno).trim()) || 0;
-                studentsresult[i].marks = Number(String(studentsresult[i].marks).trim()) || 0;
-            }
-        });
+    let response= await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_marks.php', { method: 'POST', body: form });
+    let text= await response.text();
+    if(!text)
+    {
+        alert("No results found!");
+        return;
+    }
+    let data=[];
+    data=JSON.parse(text);
+    studentsresult = [];
+    for (let i = 0; i < data.length; i++) {
+        studentsresult.push(data[i]);
+        studentsresult[i].rollno = Number(String(studentsresult[i].rollno).trim());
+        studentsresult[i].marks = Number(String(studentsresult[i].marks).trim()) ;
+    }
+    
 }
 
 // ------------------- DISPLAY RESULT TABLE ----------------
