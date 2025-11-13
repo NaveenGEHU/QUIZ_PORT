@@ -4,8 +4,10 @@ function openPage(url) {
     window.location.href = url;
 }
 
+
 // ---------------- GLOBAL VARIABLES ----------------
 let current_test_key = ''; // Stores the active test key
+// let testSubmitted = false; // Flag to avoid navigation while taking the test
 let Test = null;           // Linked list head for test questions
 let currentquestion = null;// Pointer to the currently displayed question
 let activeStudent;         // Stores the currently active student object
@@ -53,12 +55,17 @@ function saveActiveTeacher(a) {
 
 //----------------------- TEST CREATION EVENT LISTENER -------------------------
 const stop = document.getElementById("create_test_button");
+if (window.location.pathname.includes("testcreatingpage.html") && !Test ) {
+  AskUserBeforeReload();
+} 
 if (stop) {
-    stop.addEventListener("click", function (e) {
+        // AskUserBeforeReload();
+        stop.addEventListener("click", function (e) {
         e.preventDefault();
         if (!Test) {
             alert("Error! Test can't be empty. Add questions to create a test.");
         } else {
+           
             prev = document.getElementById('createquestion_container');
             prev.style.display = 'none';
             element = document.getElementById('container');
@@ -95,6 +102,7 @@ if (stop) {
 
                 alert("Test saved successfully!");
                 openPage('teacherdashboard.html');
+              
             });
         }
         }
@@ -615,10 +623,19 @@ function displayQuestion() {
     const nextbttn = document.getElementById('next_button');
     const previousbttn = document.getElementById('previous_button');
     const calc_marks_trigger = document.getElementById('endTest');
+//----------------Confirm user choice -------------
+    
 
+    
     if (calc_marks_trigger) {
+       
         calc_marks_trigger.addEventListener('click', function (e) {
-            e.preventDefault();
+        e.preventDefault();
+        let confirmToSubmit= confirm("Note: No more attemps will be provide \nAre you sure to submit your test ! ");
+        if(!confirmToSubmit)
+        {
+            return;
+        }
             SaveResponse();
             CalculateMarks(Test);
             element.innerHTML = `<h1 id='afterSubmit'>Your responses have been submitted.</h1>`;
@@ -698,10 +715,21 @@ function SaveMarks() {
 
     fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/send_marks.php', { method: 'POST', body: studentresultform });
 }
+function AskUserBeforeReload()
+{
+    window.addEventListener('beforeunload', (e) => {
+    if (1) {
+        e.preventDefault();
+        e.returnValue = ''; // triggers browser native dialog
+    }
+    });
+}
+
 
 // ------------------- SORT AND DISPLAY RESULTS ----------------
 const result_trigger = document.getElementById('result');
 if (result_trigger) {
+    //  AskUserBeforeReload();
     result_trigger.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -734,7 +762,7 @@ if (result_trigger) {
 // ------------------- SORT AND DISPLAY LOGIC ----------------
 async function sortAndDisplay(sorttype, sectionslected, courseselected) {
     await fetchResult();
-
+    AskUserBeforeReload();
     if (sorttype === "markswise") {
         quickSortMarks(studentsresult, 0, studentsresult.length - 1);
         displayResult(studentsresult);
