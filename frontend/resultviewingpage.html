@@ -7,20 +7,27 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login_container">
+    <div id="viewpage">
+        <div id="TestKeyBox" ></div>
+    <div id ="viewresult" class="login_container">
         <h1>View Results</h1>
-        <form onsubmit="event.preventDefault(); loadresult();">
+        <form id="result">
             <label for="testkey">Test Key</label>
-        
-            
             <input type="text" id="testkey" required> 
-            <select id="sortingDrawer">
-            <option>Sorting Method</option>
-            <option>SECTION</option>
-            <option>MARKS</option>
+            <select id="sortingDrawer" required>
+            <option value="">Sorting Method</option>
+            <option value="sectionwise">SECTION</option>
+            <option value="markswise">MARKS</option>
             </select>
-            <button type="button" onclick="sort()">DISPALAY</form>button>
+            <p>Section (required only if SECTION sorting)<input type="text" id="section" placeholder="eg. A1 , B1 etc"e></p>
+            <p>Course (required only if SECTION sorting)
+            <input type="text" id="course" placeholder="eg. CS, EE etc">
+            </p>
+            <button class="allbutton" type='submit' id='showresultButton' >Show Result
         </form>
+    </div>
     </div>
 <script src="app.js"></script>   
 </body>
+
+</html>

@@ -5,13 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <h1 id ="title">QUIZ PORT</h1>
+    <p id ="title_body">Your Quiz Management Platform with automatic scores calculation, sorting features.</p>
 </head>
 <body>
-<div id ="first_page">
+<div id ="first_page" class= " ">
 <h1 id="headings">Choose Your Role</h1>
-<button id="student_button" onclick="openPage('loginpageforstudent.html')">Student</button><br>
-<button id="teacher_button" onclick="openPage('loginpageforteacher.html')">Teacher</button>
+<button class="allbutton"  id="student_button" onclick="openPage('loginpageforstudent.html')">Student</button><br>
+<button  class="allbutton" id="teacher_button" onclick="openPage('loginpageforteacher.html')">Teacher</button>
 </div>
 <script src="app.js"></script>
+
+ <!-- <div id="question">
+        <div id="statement">${currentquestion.qno}) ${currentquestion.statement}</div>
+        <label><input class="option" name="response_answer" value='A' type="radio" ${previousAnswer === 'A' ? 'checked' : ''} required>${currentquestion.optionA}</label><br>
+        <label><input class="option" name="response_answer" value='B' type="radio" ${previousAnswer === 'B' ? 'checked' : ''} required>${currentquestion.optionB}</label><br>
+        <label><input class="option" name="response_answer" value='C' type="radio" ${previousAnswer === 'C' ? 'checked' : ''} required>${currentquestion.optionC}</label><br>
+        <label><input class="option" name="response_answer" value='D' type="radio" ${previousAnswer === 'D' ? 'checked' : ''} required>${currentquestion.optionD}</label><br>
+        <button id="previous_button">Previous</button>
+        <button id="next_button">Next</button>
+        <button id="endTest">Submit</button>
+    </div> -->
 </body>
 </html>

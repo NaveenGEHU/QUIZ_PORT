@@ -7,3 +7,5 @@ To open website:
 2: open folder
 4: double click the idex.html page
 5: You can check each page individually by just double clicking on the pages
+
+23 / 10 /25  : New UI created

@@ -1,6 +1,6 @@
 <?php
     include "conn.php";
-    header('Content-Type: application/json'); // JSON RESPONSE
+    // header('Content-Type: application/json'); // JSON RESPONSE
     $sql="SELECT * FROM teacher";
     $result=mysqli_query($conn,$sql);
     $data=[];

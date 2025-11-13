@@ -6,22 +6,30 @@
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="createquestion_container">
-        <h1>Create a New Test</h1>
+<body onload="QuestionNo()">
+    <div id="container" >
+
+    </div>
+    <div id="createquestion_container" >
+        <h1 id="testCreation">Create a New Test</h1>
         <form id="add_question_form">
-            <label for="question">Question</label>
-            <input placeholder="Enter Question" id="question" type="text" required>
-            <label for="opt1">Option A</label><input placeholder="Enter Option" id="opt1" type="text" required>
-            <label for="opt2">Option B</label><input placeholder="Enter Option" id="opt2" type="text" required>
-            <label for="opt3">Option C</label><input placeholder="Enter Option" id="opt3" type="text" required>
-            <label for="opt4">Option D</label><input placeholder="Enter Option" id="opt4" type="text" required>
-            <label for="correct_opt">Correct Option</label>
-            <input id="correct_opt" placeholder="Answer - A, B, C or D" type="text" required>
-            <button id="add_question_button" type="submit">Add Question</button>
+            <label for="question">Question</label><label id ='qno'></label>
+            <input placeholder="Enter Question" id="question" type="text" required><br>
+            <label for="opt1">Option A</label><input placeholder="Enter Option" id="opt1" type="text" required><br>
+            <label for="opt2">Option B</label><input placeholder="Enter Option" id="opt2" type="text" required><br>
+            <label for="opt3">Option C</label><input placeholder="Enter Option" id="opt3" type="text" required><br>
+            <label for="opt4">Option D</label><input placeholder="Enter Option" id="opt4" type="text" required><br>
+            <h2> Correct Option</h2>
+            <label for="correct_optA"><input id="correct_optA" class='question-correct-answer'  name='correct_answer' value='A' type="radio" required> Option A </label>
+            <label for="correct_optB"><input id="correct_optB" class='question-correct-answer' name='correct_answer' value='B' type="radio" required> Option B </label>
+            <label for="correct_optC"><input id="correct_optC" class='question-correct-answer' name='correct_answer' value='C' type="radio" required> Option C </label>
+            <label for="correct_optD"><input  id="correct_optD" class='question-correct-answer' name='correct_answer' value='D' type="radio" required> Option D </label>
+            
+            <!-- <input id="correct_opt" placeholder="Answer - A, B, C or D" type="text" required><br> -->
+            <button class="allbutton" id="add_question_button" type="submit">Add Question</button>
         </form>
         <!-- <div id="popUp"></div> -->
-        <button id="create_test_button" >Create Test</button>
+        <button class="allbutton" id="create_test_button" >Create Test</button>
     </div>
    <script src="app.js"></script>
 </body>

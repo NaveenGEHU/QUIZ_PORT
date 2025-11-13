@@ -1,8 +1,7 @@
 <?php
 // header('Content-Type: application/json');
 include 'conn.php';
-
-$key=isset($_POST['key']) ? $_POST['key'] : '';
+$key=$_POST['key'];
 if($key=='')
 {
     echo "Key can't be empty";
@@ -17,17 +16,17 @@ if($key=='')
     opt4 VARCHAR(60) ,
     answer VARCHAR(60) 
     ) ";
-if( !mysqli_query($conn,$query) )
+if( !(mysqli_query($conn,$query)) )
 {
     echo "Error creating table";
     exit;
 }
-$statement = isset($_POST['statement']) ? mysqli_real_escape_string($conn, $_POST['statement']) : '';
-$opt1 = isset($_POST['opt1']) ? mysqli_real_escape_string($conn, $_POST['opt1']) : '';
-$opt2 = isset($_POST['opt2']) ? mysqli_real_escape_string($conn, $_POST['opt2']) : '';
-$opt3 = isset($_POST['opt3']) ? mysqli_real_escape_string($conn, $_POST['opt3']) : '';
-$opt4 = isset($_POST['opt4']) ? mysqli_real_escape_string($conn, $_POST['opt4']) : '';
-$answer= isset($_POST['answer']) ? mysqli_real_escape_string($conn, $_POST['answer']) : '';
+$statement = $_POST['statement'];
+$opt1 = $_POST['opt1'];
+$opt2 = $_POST['opt2'];
+$opt3 = $_POST['opt3'];
+$opt4 = $_POST['opt4'];
+$answer= $_POST['answer'];
 
 if ($statement === '' || $opt1 ==='' || $opt2 === '' || $opt3 === '' || $opt4 === '' || $answer === '') {
     echo "All fields are required";
