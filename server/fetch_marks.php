@@ -1,28 +1,55 @@
 <?php
     include 'conn.php';
-    header('Content-Type:appliation/json');
-    $key=$_POST['key'];
-    if($key==='')
-    {
+    include 'JsonResponse.php';
+    header('Content-Type: application/json');
+    $key = trim($_POST['key'] ?? '');
+    $sorttype = trim($_POST['sorttype'] ?? '');
+    $section = trim($_POST['section'] ?? '');
+    $course = trim($_POST['course'] ?? '');
+
+    if ($key === '') {
+        $response = new JsonResponse();
+        $response->setSuccess(false)->setMessage('Key is required.')->output();
         exit;
     }
-    $key="result".$key;
 
+    $tableName = "result" . $key;
 
     // ✅ Check if table exists
-    $check = mysqli_query($conn, "SHOW TABLES LIKE '$key'");
-    if (mysqli_num_rows($check) == 0) 
+    $check = mysqli_query($conn, "SHOW TABLES LIKE '$tableName'");
+    if (mysqli_num_rows($check) == 0) {
+        $response = new JsonResponse();
+        $response->setSuccess(false)->setMessage('No results found for this test key.')->output();
         exit;
-    $query="SELECT * FROM `$key`";
-    $result=mysqli_query($conn,$query);
-    if(!($result->num_rows>0))
-    {
-        exit;
-     
     }
-       while($row=$result->fetch_assoc())
-        {
-            $data[]=$row;
+
+    $query = "SELECT * FROM `$tableName`";
+
+    // Apply sorting or filtering
+    if ($sorttype === 'markswise') {
+        $query .= " ORDER BY marks DESC";
+    } elseif ($sorttype === 'sectionwise') {
+        if ($section !== '' && $course !== '') {
+            $query .= " WHERE section='$section' AND course='$course' ORDER BY rollno ASC";
+        } else {
+            $response = new JsonResponse();
+            $response->setSuccess(false)->setMessage('Section and course are required for sectionwise sorting.')->output();
+            exit;
         }
-        echo json_encode($data);
+    }
+
+    $result = mysqli_query($conn, $query);
+    if (!$result || $result->num_rows == 0) {
+        $response = new JsonResponse();
+        $response->setSuccess(false)->setMessage('No data found.')->output();
+        exit;
+    }
+
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+
+    $response = new JsonResponse();
+    $response->setSuccess(true)->setData('results', $data)->output();
 ?>

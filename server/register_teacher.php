@@ -1,21 +1,44 @@
 <?php
-// header('Content-Type: application/json');
+header('Content-Type: application/json');
 include 'conn.php';
-$name = $_POST['name'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-if($name ==='' || $email==='' || $password=='')
-{
+include 'JsonResponse.php';
+
+// Get JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+$name = trim($input['name'] ?? '');
+$email = trim($input['email'] ?? '');
+$password = trim($input['password'] ?? '');
+
+// Fetch all teachers
+$sql = "SELECT * FROM teacher";
+$result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('Database error.')->output();
     exit;
 }
-$query="INSERT INTO teacher(name, email,password) VALUES('$name','$email','$password')";
-if(mysqli_query($conn,$query))
-{
-    echo"REGISTRATION SUCCESSFUL";
-}
-else
-{
-    echo"REGISTRATION FAILED";
+
+// Build Hash Table for Email (unique)
+$hash_email = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $hash_email[$row['email']] = $row;
 }
 
+// Check for duplicate email
+if (isset($hash_email[$email])) {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('Account already exists! Please login.')->output();
+    exit;
+}
+
+// Insert new teacher
+$query = "INSERT INTO teacher(name, email, password) VALUES('$name', '$email', '$password')";
+if (mysqli_query($conn, $query)) {
+    $response = new JsonResponse();
+    $response->setSuccess(true)->setMessage('REGISTRATION SUCCESSFUL')->output();
+} else {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('REGISTRATION FAILED')->output();
+}
 ?>

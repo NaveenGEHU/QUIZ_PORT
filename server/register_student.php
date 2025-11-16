@@ -1,24 +1,47 @@
 <?php
-// header('Content-Type: application/json');
+header('Content-Type: application/json');
 include 'conn.php';
-$id = $_POST['id'];
-$name = $_POST['name'];
-$password = $_POST['password'];
-$section = $_POST['section'] ;
-$course = $_POST['course'];
-$rollno = $_POST['rollno'];
-if($id ==='' || $name ==='' ||   $password ==='' || $section ==='' ||  $course ==='' ||  $rollno ==='' )
-{
+include 'JsonResponse.php';
+
+// Get JSON input
+$input = json_decode(file_get_contents('php://input'), true);
+$id = trim($input['id'] ?? '');
+$name = trim($input['name'] ?? '');
+$password = trim($input['password'] ?? '');
+$section = trim($input['section'] ?? '');
+$course = trim($input['course'] ?? '');
+$rollno = trim($input['rollno'] ?? '');
+
+// Fetch all students
+$sql = "SELECT * FROM student";
+$result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('Database error.')->output();
     exit;
 }
-$query="INSERT INTO student(id ,name,password,section,course,rollno) VALUES('$id','$name','$password','$section','$course','$rollno')";
-if(mysqli_query($conn,$query))
-{
-    echo"REGISTRATION SUCCESSFUL";
-}
-else
-{
-    echo"REGISTRATION FAILED";
+
+// Build Hash Table for ID (unique)
+$hash_id = [];
+while ($row = mysqli_fetch_assoc($result)) {
+    $hash_id[$row['id']] = $row;
 }
 
+// Check for duplicate id
+if (isset($hash_id[$id])) {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('REGISTRATION FAILED! Student ID already exists!')->output();
+    exit;
+}
+
+// Insert new student
+$query = "INSERT INTO student(id, name, password, section, course, rollno) VALUES('$id', '$name', '$password', '$section', '$course', '$rollno')";
+if (mysqli_query($conn, $query)) {
+    $response = new JsonResponse();
+    $response->setSuccess(true)->setMessage('REGISTRATION SUCCESSFUL')->output();
+} else {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('REGISTRATION FAILED')->output();
+}
 ?>

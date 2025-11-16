@@ -515,3 +515,73 @@ font-family:sans-serif;
     color: #009879;
     background-color: #f3f3f3;
 }
+
+#questionNav {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#questionNav h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.nav-button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 40px;
+    height: 40px;
+}
+
+.nav-button.answered {
+    background-color: #4CAF50; /* Green for answered */
+    color: white;
+}
+
+.nav-button.unanswered {
+    background-color: #f44336; /* Red for unanswered */
+    color: white;
+}
+
+.nav-button:hover {
+    opacity: 0.8;
+}
+
+#questionNav {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#questionNav h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.nav-button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 40px;
+    height: 40px;
+}
+
+.nav-button.answered {
+    background-color: #4CAF50; /* Green for answered */
+    color: white;
+}
+
+.nav-button.unanswered {
+    background-color: #f44336; /* Red for unanswered */
+    color: white;
+}
+
+.nav-button:hover {
+    opacity: 0.8;
+}

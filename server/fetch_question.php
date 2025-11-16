@@ -1,39 +1,35 @@
 <?php
-    // header('Content-Type: application/json'); // JSON RESPONSE
-    include 'conn.php';
-    $key=$_POST['key'];
-    if($key==='')
-    {
-        exit;
-    }
-    // $query="SELECT * FROM `$key`";
-    // $data=[];
-    // $result = @mysqli_query($conn, $query); // @ suppresses SQL warnings
-    // if(!($result &&  $result->num_rows>0  ))
-    // {
-    //     exit;
-    // }
-    // while($row = $result->fetch_assoc())
-    // {
-    //     $data[]=$row;
-    // }
-    // echo json_encode($data);
+header('Content-Type: application/json');
+include 'conn.php';
+include 'JsonResponse.php';
 
+$key = $_POST['key'] ?? '';
+if ($key === '') {
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('Key is required')->output();
+    exit;
+}
 
-    try {
-    $query = "SELECT * FROM `$key`";
+try {
+    $query = "SELECT q_no, statement, opt1, opt2, opt3, opt4 FROM `$key`";
     $result = mysqli_query($conn, $query);
 
-    if (!($result && $result->num_rows > 0)) 
+    if (!($result && $result->num_rows > 0)) {
+        $response = new JsonResponse();
+        $response->setSuccess(false)->setMessage('No questions found')->output();
         exit;
+    }
 
+    $data = [];
     while ($row = $result->fetch_assoc()) {
         $data[] = $row;
     }
-    echo json_encode($data);
-    } catch (mysqli_sql_exception $e) {
-        // Table not found or other SQL error – exit silently
-        exit;
-    }
-        // add quesry to check the table exist or not;
+
+    $response = new JsonResponse();
+    $response->setSuccess(true)->setData('questions', $data)->output();
+} catch (mysqli_sql_exception $e) {
+    // Table not found or other SQL error – return error response
+    $response = new JsonResponse();
+    $response->setSuccess(false)->setMessage('Table not found or SQL error')->output();
+}
 ?>

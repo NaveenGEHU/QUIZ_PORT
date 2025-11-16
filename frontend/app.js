@@ -7,13 +7,14 @@ function openPage(url) {
 
 // ---------------- GLOBAL VARIABLES ----------------
 let current_test_key = ''; // Stores the active test key
-// let testSubmitted = false; // Flag to avoid navigation while taking the test
 let Test = null;           // Linked list head for test questions
 let currentquestion = null;// Pointer to the currently displayed question
 let activeStudent;         // Stores the currently active student object
 let activeTeacher;         // Stores the currently active teacher object
 let ans_resp = [];         // Array to track student's answers
-let testKeys = [];         // GLOBAL TEST KEYS ARRAY 
+let testKeys = [];         // GLOBAL TEST KEYS ARRAY
+let studentsresult = [];   // Stores the fetched results for display and download
+
 //---------------------------- SAVING TEST QUESTIONS ----------------------------
 
 async function savetest() {
@@ -31,12 +32,11 @@ async function savetest() {
         
         // Submit question to backend
         const res = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/create_test.php', {
-            method: 'Post', 
+            method: 'Post',
             body: questionData
         });
 
         const text = await res.text();
-        console.log("Saving question:", questionNode.statement, "=>", text);
 
         questionNode = questionNode.next;
     }
@@ -55,11 +55,10 @@ function saveActiveTeacher(a) {
 
 //----------------------- TEST CREATION EVENT LISTENER -------------------------
 const stop = document.getElementById("create_test_button");
-if (window.location.pathname.includes("testcreatingpage.html") && !Test ) {
+if (window.location.pathname.includes("testcreatingpage.html") && Test ) {
   AskUserBeforeReload();
-} 
+}
 if (stop) {
-        // AskUserBeforeReload();
         stop.addEventListener("click", function (e) {
         e.preventDefault();
         if (!Test) {
@@ -88,7 +87,6 @@ if (stop) {
                 await savetest();
 
                 activeTeacher = JSON.parse(localStorage.getItem('activeTeacher'));
-                console.log("Active teacher is:", activeTeacher);
 
                 // Send test key mapping to backend
                 const testkeyform = new FormData();
@@ -112,34 +110,27 @@ if (stop) {
 
 
 // ------------------- DISPLAY TEST KEYS ----------------
-async function showTestKeys() {    //------------------------------------TO BE COMPLETED 
+async function showTestKeys() {    //------------------------------------TO BE COMPLETED
     activeTeacher = JSON.parse(localStorage.getItem('activeTeacher'));
     const teacheremail = new FormData();
     teacheremail.append('teacher_email', activeTeacher.teacher_email);
 
     // Fetch all test keys for the logged-in teacher
     let response = await fetch("http://localhost/myprojects/GIT/QUIZ_PORT/server/getTestKeys.php", {
-        method: 'Post', 
+        method: 'Post',
         body: teacheremail
     });
-    console.log("RESPONSE:", response);
-    let data=[];
-    data=await response.json();
-    console.log("DATA:", data);
-    // let textInside= await response.text();
-    // if(!textInside)
-    // {
-    //     alert("No test keys found!");
-    //     return;
-    // }
-    // console.log("TEST KEY AYEGI");
-    // console.log("RAW DATA:", data);
-    // data =await JSON.parse(textInside);
+    let parsed = await response.json();
+    if (!parsed.success) {
+        alert(parsed.message);
+        return;
+    }
+    let data = parsed.test_keys;
     for (let i = 0; i < data.length; i++) {
         testKeys[i] = data[i].test_created;
-            }
- 
-   
+    }
+
+
 }
 
 // --------------------------Render test keys table--------------------------
@@ -155,13 +146,11 @@ if(TestKeyData){
     </thead>
     <tbody>
     `;
-    console.log("TEST KEYS:", testKeys);
     for( let a of testKeys )
     {
         Table+= `<tr><td> ${a}</td></tr>`;
     }
-   
-    // console.log("test key lenght = " , testKeys.lenght);
+
     Table+= `</tbody></table>`;
     TestKeyData.innerHTML=Table;
     });
@@ -179,7 +168,6 @@ function QuestionNo() {
     const element = document.getElementById('qno');
     if (element) {
         element.innerHTML = `${qno}`;
-        console.log("Qno :", qno);
     }
 }
 
@@ -209,7 +197,6 @@ function addquestion() {
             break;
         }
     }
-    console.log("Answer:", ans);
 
     // If first question, initialize Test linked list
     if (!Test) {
@@ -230,10 +217,6 @@ function addquestion() {
     QuestionNo();
     document.getElementById("add_question_form").reset();
 }
-
-// ------------------- STUDENTS & TEACHERS ARRAYS ----------------
-let students = [];
-let teachers = [];
 
 // ------------------- QUESTION CLASS ----------------
 class Question {
@@ -291,22 +274,6 @@ class student {
     }
 }
 
-// ------------------- FETCH TEACHER DATA FROM BACKEND ----------------
-fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetchdb_teacher.php')
-    .then(response_teacher => response_teacher.json())
-    .then(data_teacher => {
-        // Populate teachers array with teacher objects
-        teachers = data_teacher.map(row_teacher => new teacher(row_teacher.name, row_teacher.email, row_teacher.password));
-    });
-
-// ------------------- FETCH STUDENT DATA FROM BACKEND ----------------
-fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_dbstudent.php')
-    .then(response => response.json())
-    .then(data => {
-        // Populate students array with student objects
-        students = data.map(row => new student(row.id, row.name, row.password, row.section, row.course, row.rollno));
-    });
-
 // ------------------- REGISTER EVENT LISTENERS ----------------
 const studentregister = document.querySelector('#student_registration_form');
 if (studentregister) {
@@ -330,77 +297,56 @@ async function registerStudent() {
     const newpass = document.getElementById("reg_student_password").value.trim();
     const newsec = document.getElementById("reg_student_section").value.trim();
     const newcourse = document.getElementById("reg_student_course").value.trim();
-    console.log("COUSRSE",newcourse);
     const newrollno = document.getElementById("reg_student_roll").value.trim();
 
-    const new_student = new student(newid, newname, newpass, newsec, newcourse, newrollno);
-
-    // ---------------- VALIDATE REQUIRED FIELDS ----------------
-    if (!newid || !newname || !newpass || !newsec || !newcourse || !newrollno) {
-        alert("All fields are required! ❌");
+    // ---------------- VALIDATION ----------------
+    if (newid === '' || newname === '' || newpass === '' || newsec === '' || newcourse === '' || newrollno === '') {
+        alert('All fields are required!');
         return;
     }
-
-    // ---------------- VALIDATE NUMERIC STUDENT ID ----------------
-    for (let i = 0; i < newid.length; i++) {
-        let c = newid[i];
-        if (!(c >= 0 && c <= 9)) {
-            alert("Student ID must be numeric!");
-            return;
-        }
+    // ---------------- ADDITIONAL VALIDATION (C-style) ----------------
+    if (isNaN(newid)) {
+        alert('Student ID must be numeric!');
+        return;
     }
-
-    // ---------------- VALIDATE NAME ----------------
     for (let i = 0; i < newname.length; i++) {
-        let c = newname[i];
-        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ')) {
-            alert("Name can only contain letters and spaces!");
+        let ch = newname[i];
+        if (!((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || ch === ' ')) {
+            alert('Name can only contain letters and spaces!');
             return;
         }
     }
-
-    // ---------------- VALIDATE PASSWORD LENGTH ----------------
     if (newpass.length < 6) {
-        alert("Password must be at least 6 characters!");
+        alert('Password must be at least 6 characters!');
+        return;
+    }
+    if (isNaN(newrollno)) {
+        alert('Roll number must be numeric!');
         return;
     }
 
-    // ---------------- VALIDATE ROLL NUMBER ----------------
-    for (let i = 0; i < newrollno.length; i++) {
-        let c = newrollno[i];
-        if (!(c >= 0 && c <= 9)) {
-            alert("Roll number must be numeric!");
-            return;
-        }
-    }
+    // ---------------- SEND STUDENT DATA TO BACKEND AS JSON ----------------
+    const data = new student(newid, newname, newpass, newsec, newcourse, newrollno);
 
-    // ---------------- DUPLICATE STUDENT CHECK ----------------
-    for (let i = 0; i < students.length; i++) {
-        if (students[i].id == newid || (students[i].rollno == newrollno && students[i].section == newsec && students[i].course == newcourse)) {
-            alert("REGISTRATION FAILED! Account already exists!");
-            return;
-        }
-    }
-
-    // ---------------- SEND STUDENT DATA TO BACKEND ----------------
-    const formData = new FormData();
-    formData.append('id', newid);
-    formData.append('name', newname);
-    formData.append('password', newpass);
-    formData.append('section', newsec);
-    formData.append('course', newcourse);
-    formData.append('rollno', newrollno);
-
-    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_student.php', {
+    const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_student.php', {
         method: 'POST',
-        body: formData
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
     });
 
-    // ---------------- UPDATE LOCAL DATA AND REDIRECT ----------------
-    students.push(new_student);
-    document.getElementById('student_registration_form').reset();
-    saveActiveStudent(new_student);
-    openPage('studentdashboard.html');
+    const result = await response.json();
+
+    if (result.success) {
+        // ---------------- CREATE STUDENT OBJECT AND REDIRECT ----------------
+        const new_student = new student(newid, newname, newpass, newsec, newcourse, newrollno);
+        document.getElementById('student_registration_form').reset();
+        saveActiveStudent(new_student);
+        openPage('studentdashboard.html');
+    } else {
+        alert(result.message);
+    }
 }
 
 // ------------------- STUDENT LOGIN VALIDATION ----------------
@@ -412,22 +358,37 @@ if (studentlogin) {
     });
 }
 
-function student_validate_login() {
-    let login_id = document.getElementById('student_id').value.trim();
-    let login_pass = document.getElementById('student_password').value.trim();
+async function student_validate_login() {
+    const login_id = document.getElementById('student_id').value.trim();
+    const login_pass = document.getElementById('student_password').value.trim();
 
-    for (let i = 0; i < students.length; i++) {
-        if (login_id == students[i].id && login_pass != students[i].password) {
-            alert("Incorrect Password");
-            return;
-        } else if (login_id == students[i].id && login_pass == students[i].password) {
-            saveActiveStudent(students[i]);
-            openPage('studentdashboard.html');
-            return;
-        }
+    // ---------------- VALIDATION ----------------
+    if (login_id === '' || login_pass === '') {
+        alert('ID and password are required.');
+        return;
     }
 
-    alert("Account does not exist. Please create one!");
+    // ---------------- SEND LOGIN DATA TO BACKEND AS JSON ----------------
+    const data=new student(login_id,"",login_pass);
+
+    const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_dbstudent.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        const studentData = result.user;
+        const studentObj = new student(studentData.id, studentData.name, studentData.password, studentData.section, studentData.course, studentData.rollno);
+        saveActiveStudent(studentObj);
+        openPage('studentdashboard.html');
+    } else {
+        alert(result.message);
+    }
 }
 
 // ------------------- TEACHER LOGIN VALIDATION ----------------
@@ -445,75 +406,62 @@ async function teacher_register() {
     const teacher_email = document.getElementById("teacher_email").value.trim();
     const teacher_pass = document.getElementById("teacher_password").value.trim();
 
-    const newteacher = new teacher(teacher_fn, teacher_email, teacher_pass);
+    // ---------------- SEND TEACHER DATA TO BACKEND AS JSON ----------------
+    const data = {
+        name: teacher_fn,
+        email: teacher_email,
+        password: teacher_pass
+    };
 
-    // ---------------- VALIDATE REQUIRED FIELDS ----------------
-    if (!teacher_fn || !teacher_email || !teacher_pass) {
-        alert("All fields are required! ❌");
-        return;
+    const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_teacher.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    const result = await response.json();
+
+    if (result.success) {
+        // ---------------- CREATE TEACHER OBJECT AND REDIRECT ----------------
+        const newteacher = new teacher(teacher_fn, teacher_email, teacher_pass);
+        document.getElementById("teacher_registration_form").reset();
+        saveActiveTeacher(newteacher);
+        openPage("teacherdashboard.html");
+    } else {
+        alert(result.message);
     }
-
-    // ---------------- VALIDATE NAME ----------------
-    for (let i = 0; i < teacher_fn.length; i++) {
-        let c = teacher_fn[i];
-        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ')) {
-            alert("Name can only contain letters and spaces!");
-            return;
-        }
-    }
-
-    // ---------------- VALIDATE PASSWORD ----------------
-    if (teacher_pass.length < 6) {
-        alert("Password must be at least 6 characters!");
-        return;
-    }
-
-    // ---------------- DUPLICATE CHECK ----------------
-    for (let i = 0; i < teachers.length; i++) {
-        if (teacher_email == teachers[i].teacher_email) {
-            alert("Account already exists! Please login.");
-            return;
-        }
-    }
-
-    // ---------------- SEND TEACHER DATA TO BACKEND ----------------
-    const postform = new FormData();
-    postform.append('name', teacher_fn);
-    postform.append('email', teacher_email);
-    postform.append('password', teacher_pass);
-
-    await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_teacher.php', { method: 'POST', body: postform });
-
-    // ---------------- UPDATE LOCAL DATA AND REDIRECT ----------------
-    teachers.push(newteacher);
-    document.getElementById("teacher_registration_form").reset();
-    saveActiveTeacher(newteacher);
-    openPage("teacherdashboard.html");
 }
 
 // ------------------- TEACHER LOGIN FUNCTION ----------------
-function teacher_validate_login() {
+async function teacher_validate_login() {
     const login_teacher_email = document.getElementById("login_teacher_email").value.trim();
     const login_teacher_pass = document.getElementById("login_teacher_password").value.trim();
 
-    for (let i = 0; i < teachers.length; i++) {
-        if (teachers[i].teacher_email == login_teacher_email && teachers[i].teacher_password != login_teacher_pass) {
-            alert("Incorrect Password");
-            return;
-        }
+    // ---------------- SEND LOGIN DATA TO BACKEND AS JSON ----------------
+    const data= new teacher("",login_teacher_email,login_teacher_pass);
+    const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetchdb_teacher.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
 
-        if (teachers[i].teacher_email == login_teacher_email && teachers[i].teacher_password == login_teacher_pass) {
-            saveActiveTeacher(teachers[i]);
-            openPage("teacherdashboard.html");
-            return;
-        }
+    const result = await response.json();
+
+    if (result.success) {
+        const teacherData = result.user;
+        const teacherObj = new teacher(teacherData.name, teacherData.email, teacherData.password);
+        saveActiveTeacher(teacherObj);
+        openPage("teacherdashboard.html");
+    } else {
+        alert(result.message);
     }
-
-    alert("Account does not exist! Register first.");
 }
 // ------------------- START TEST EVENT ----------------
 const startTest = document.getElementById('student_test_taking');
-if (startTest) {  // ----------------------------YAHA PE SELCET DRWAER TO  SELCET THE TESTS 
+if (startTest) {  // ----------------------------YAHA PE SELCET DRWAER TO  SELCET THE TESTS
     startTest.addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -524,9 +472,12 @@ if (startTest) {  // ----------------------------YAHA PE SELCET DRWAER TO  SELCE
             alert("Test key cannot be empty!");
             return;
         }
-        
+
+
+
         // ---------------- LOAD TEST DATA FROM BACKEND ----------------
         await loadtest();
+        displayQuestion();
     });
 }
 
@@ -547,17 +498,19 @@ async function loadtest() {
     alert("Enter correct test key ! ");
     return;
 }
-    let data=[];
-    data=await JSON.parse(text)
-    // data=await response.json();
-    console.log(data);     
-  
+    let parsed = JSON.parse(text);
+    if (!parsed.success) {
+        alert(parsed.message);
+        return;
+    }
+    let data = parsed.questions;
+
         let curr, row;
         let i;
         for (i = 0; i < data.length; i++) {
             row = data[i];
-            const ques = new Question(row.q_no, row.statement, row.opt1, row.opt2, row.opt3, row.opt4, row.answer);
-            
+            const ques = new Question(row.q_no, row.statement, row.opt1, row.opt2, row.opt3, row.opt4, ""); // No answer sent
+
             // ---------------- BUILD LINKED LIST OF QUESTIONS ----------------
             if (Test === null) {
                 Test = ques;
@@ -571,37 +524,47 @@ async function loadtest() {
 
         currentquestion = Test;
 
-        // ---------------- INITIALIZE STUDENT DATA AND RESPONSE ARRAY ----------------
-        activeStudent = JSON.parse(localStorage.getItem('activeStudent'));
-        ans_resp = Array(i).fill(null);
-        console.log("Response array length:", ans_resp.length);                  //      testing
-        console.log("QUESTIONS :",Test);
-        displayQuestion();
+        // ---------------- COUNT QUESTIONS ----------------
+        let questionCount = 0;
+        let temp = Test;
+        while (temp != null) {
+            questionCount++;
+            temp = temp.next;
+        }
+
+        // ---------------- INITIALIZE ANSWER ARRAY ----------------
+        ans_resp = new Array(questionCount).fill(null);
     }
 
 
 
 // ------------------- DISPLAY CURRENT QUESTION ----------------
 function displayQuestion() {
-    console.log("responses : ",ans_resp);                  ///                       testing 
     let attempt = 0;
     let unattempt = 0;
-
-    // ---------------- CALCULATE ATTEMPTED/UNATTEMPTED ----------------
+// ----------------------------------------- CALCULATE ATTEMPTED/UNATTEMPTED ----------------------------------
     for (let i = 0; i < ans_resp.length; i++) {
         if (ans_resp[i]!=null) attempt++;
         else unattempt++;
     }
-
     element = document.getElementById('page');
     const index = currentquestion.qno - 1;
     const previousAnswer = ans_resp[index];
 
     Title = document.getElementById('keyTag');
-    Title.innerHTML = `<h1>QUIZ: ${current_test_key}</h1>`;
+    Title.innerHTML = `<h1>QUIZ   :   ${current_test_key}</h1>`;
+
+    // ------------------------- BUILD QUESTION NAVIGATION ------------------------------
+    let navHtml = '<div id="questionNav"><h3>Questions</h3>';
+    for (let i = 0; i < ans_resp.length; i++) {
+        const isAnswered = ans_resp[i] !== null;
+        navHtml += `<button class="nav-button ${isAnswered ? 'answered' : 'unanswered'}" data-qno="${i + 1}">${i + 1}</button>`;
+    }
+    navHtml += '</div>';
 
     // ---------------- DYNAMIC HTML GENERATION FOR QUESTION ----------------
     element.innerHTML = `
+    ${navHtml}
     <div class="Stats">
         <p id="head"></p>
         <p id="ans">Answered: ${attempt}</p>
@@ -623,12 +586,21 @@ function displayQuestion() {
     const nextbttn = document.getElementById('next_button');
     const previousbttn = document.getElementById('previous_button');
     const calc_marks_trigger = document.getElementById('endTest');
-//----------------Confirm user choice -------------
-    
+    const navButtons = document.querySelectorAll('.nav-button');
 
-    
+    // ---------------- NAVIGATION BUTTON EVENT HANDLERS ----------------
+    navButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            SaveResponse();
+            const qno = parseInt(this.getAttribute('data-qno'));
+            jumpToQuestion(qno);
+        });
+    });
+
+    //----------------Confirm user choice -------------
+
     if (calc_marks_trigger) {
-       
         calc_marks_trigger.addEventListener('click', function (e) {
         e.preventDefault();
         let confirmToSubmit= confirm("Note: No more attemps will be provide \nAre you sure to submit your test ! ");
@@ -637,8 +609,7 @@ function displayQuestion() {
             return;
         }
             SaveResponse();
-            CalculateMarks(Test);
-            element.innerHTML = `<h1 id='afterSubmit'>Your responses have been submitted.</h1>`;
+            submitTest();
         });
     }
 
@@ -657,7 +628,11 @@ function displayQuestion() {
             previousQuestion();
         });
     }
+
+
 }
+
+
 
 // ------------------- SAVE CURRENT RESPONSE ----------------
 function SaveResponse() {
@@ -686,34 +661,46 @@ function previousQuestion() {
 
 }
 
-// ------------------- CALCULATE MARKS ----------------
-function CalculateMarks(temp) {
-    activeStudent.marks = 0;
-    if (temp === null) {
-        console.log("No questions available for calculation.");
-        return;
-    }
-
-    for (let i = 0; i < ans_resp.length && temp !== null; i++) {
-        if (ans_resp[i] && ans_resp[i] === temp.answer) activeStudent.marks++;
+function jumpToQuestion(qno) {
+    let temp = Test;
+    while (temp != null) {
+        if (temp.qno == qno) {
+            currentquestion = temp;
+            break;
+        }
         temp = temp.next;
     }
-
-    SaveMarks();
+    displayQuestion();
 }
 
-// ------------------- SAVE MARKS TO DATABASE ----------------
-function SaveMarks() {
-    const studentresultform = new FormData();
-    studentresultform.append('key', current_test_key);
-    studentresultform.append('name', activeStudent.name);
-    studentresultform.append('id', activeStudent.id);
-    studentresultform.append('section', activeStudent.section);
-    studentresultform.append('course', activeStudent.course);
-    studentresultform.append('rollno', activeStudent.rollno);
-    studentresultform.append('marks', activeStudent.marks);
+// ------------------- SUBMIT TEST ----------------
+async function submitTest() {
+    const responses = {};
+    for (let i = 0; i < ans_resp.length; i++) {
+        responses[i + 1] = ans_resp[i]; // q_no starts from 1
+    }
 
-    fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/send_marks.php', { method: 'POST', body: studentresultform });
+    const formData = new FormData();
+    formData.append('key', current_test_key);
+    formData.append('responses', JSON.stringify(responses));
+    formData.append('student_id', activeStudent.id);
+    formData.append('student_name', activeStudent.name);
+    formData.append('student_section', activeStudent.section);
+    formData.append('student_course', activeStudent.course);
+    formData.append('student_rollno', activeStudent.rollno);
+
+    const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/submit_test.php', {
+        method: 'POST',
+        body: formData
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        alert(`Test submitted successfully! Your marks: ${result.marks}`);
+        openPage('studentdashboard.html');
+    } else {
+        alert('Failed to submit test: ' + result.message);
+    }
 }
 function AskUserBeforeReload()
 {
@@ -729,7 +716,6 @@ function AskUserBeforeReload()
 // ------------------- SORT AND DISPLAY RESULTS ----------------
 const result_trigger = document.getElementById('result');
 if (result_trigger) {
-    //  AskUserBeforeReload();
     result_trigger.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -761,27 +747,18 @@ if (result_trigger) {
 
 // ------------------- SORT AND DISPLAY LOGIC ----------------
 async function sortAndDisplay(sorttype, sectionslected, courseselected) {
-    await fetchResult();
+    await fetchResult(sorttype, sectionslected, courseselected);
     AskUserBeforeReload();
-    if (sorttype === "markswise") {
-        quickSortMarks(studentsresult, 0, studentsresult.length - 1);
-        displayResult(studentsresult);
-    } else if (sorttype === "sectionwise") {
-        sortedbysection = [];
-        for (let i = 0; i < studentsresult.length; i++) {
-            if (studentsresult[i].section === sectionslected && studentsresult[i].course === courseselected) {
-                sortedbysection.push(studentsresult[i]);
-            }
-        }
-        quickSortRollNo(sortedbysection, 0, sortedbysection.length - 1);
-        displayResult(sortedbysection);
-    }
+    displayResult(studentsresult);
 }
 
 // ------------------- FETCH RESULT DATA ----------------
-async function fetchResult() {
+async function fetchResult(sorttype, sectionslected, courseselected) {
     const form = new FormData();
     form.append('key', current_test_key);
+    form.append('sorttype', sorttype);
+    form.append('section', sectionslected);
+    form.append('course', courseselected);
 
     let response= await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_marks.php', { method: 'POST', body: form });
     let text= await response.text();
@@ -790,15 +767,19 @@ async function fetchResult() {
         alert("No results found!");
         return;
     }
-    let data=[];
-    data=JSON.parse(text);
+    let parsed = JSON.parse(text);
+    if (!parsed.success) {
+        alert(parsed.message);
+        return;
+    }
+    let data = parsed.results;
     studentsresult = [];
     for (let i = 0; i < data.length; i++) {
         studentsresult.push(data[i]);
         studentsresult[i].rollno = Number(String(studentsresult[i].rollno).trim());
         studentsresult[i].marks = Number(String(studentsresult[i].marks).trim()) ;
     }
-    
+
 }
 
 // ------------------- DISPLAY RESULT TABLE ----------------
@@ -835,45 +816,31 @@ function displayResult(arr) {
     page.innerHTML = table;
 }
 
-// ------------------- SORTING FUNCTIONS ----------------
-function quickSortMarks(arr, low, high) {
-    if (low < high) {
-        let pi = partitionMarks(arr, low, high);
-        quickSortMarks(arr, low, pi - 1);
-        quickSortMarks(arr, pi + 1, high);
-    }
-}
+// // ------------------- DOWNLOAD CSV FUNCTION ----------------
+// function downloadCSV(data, testKey) {
+//     if (data.length === 0) {
+//         alert("No data to download!");
+//         return;
+//     }
 
-function partitionMarks(arr, low, high) {
-    let pivot = arr[high].marks;
-    let i = low - 1;
-    for (let j = low; j <= high - 1; j++) {
-        if (arr[j].marks >= pivot) {  // Descending order
-            i++;
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-    }
-    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-    return i + 1;
-}
+//     // Create CSV header
+//     let csvContent = "Student ID,Name,Section,Course,Class Roll No,Marks\n";
 
-function quickSortRollNo(arr, low, high) {
-    if (low < high) {
-        let pi = partitionRollNo(arr, low, high);
-        quickSortRollNo(arr, low, pi - 1);
-        quickSortRollNo(arr, pi + 1, high);
-    }
-}
+//     // Add data rows
+//     data.forEach(row => {
+//         csvContent += `"${row.id}","${row.name}","${row.section}","${row.course}",${row.rollno},${row.marks}\n`;
+//     });
 
-function partitionRollNo(arr, low, high) {
-    let pivot = arr[high].rollno;
-    let i = low - 1;
-    for (let j = low; j <= high - 1; j++) {
-        if (arr[j].rollno <= pivot) { // Ascending order
-            i++;
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-    }
-    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-    return i + 1;
-}
+//     // Create blob and download
+//     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+//     const link = document.createElement("a");
+//     const url = URL.createObjectURL(blob);
+//     link.setAttribute("href", url);
+//     link.setAttribute("download", `${testKey}_results.csv`);
+//     link.style.visibility = 'hidden';
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+// }
+
+
