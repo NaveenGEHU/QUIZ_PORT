@@ -32,9 +32,9 @@ $opt3 = $_POST['opt3'] ?? '';
 $opt4 = $_POST['opt4'] ?? '';
 $answer = $_POST['answer'] ?? '';
 
-if ($statement === '' || $opt1 === '' || $opt2 === '' || $opt3 === '' || $opt4 === '' || $answer === '') {
+if ($statement === '' ) {
     $response = new JsonResponse();
-    $response->setSuccess(false)->setMessage('All fields are required')->output();
+    $response->setSuccess(false)->setMessage('Statement cant be empty')->output();
     exit;
 }
 

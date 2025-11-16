@@ -123,7 +123,7 @@ button#next_button {margin-left: 70%;}
 
 button#endTest {
     margin-left: 8%;
-    margin-top: -13%;
+    margin-top: -1%;
     position: absolute;
 }
 
@@ -277,7 +277,7 @@ div#keyTag {
     text-align: center;
 };
     
-    width: 15%;height: 34%;/* border: solid; */margin-top: 9%;padding: 2%;margin-left: 75%;position: absolute;
+    width: 15%;height: 34%;/* border: solid; */margin-top: 19%;padding: 2%;margin-left: 75%;position: absolute;
     
 }
 
@@ -292,6 +292,7 @@ p#head {
 
 p#ans {
     color: green;
+    padding-top: 7px;
 }
 
 p#unans {
@@ -551,10 +552,7 @@ font-family:sans-serif;
     opacity: 0.8;
 }
 
-#questionNav {
-    margin-bottom: 20px;
-    text-align: center;
-}
+#questionNav {position: absolute;margin-left: 77%;width: 18%;height: auto;margin-top: 7%;}
 
 #questionNav h3 {
     margin-bottom: 10px;

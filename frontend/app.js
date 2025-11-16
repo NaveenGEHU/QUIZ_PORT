@@ -556,7 +556,8 @@ function displayQuestion() {
 
     // ------------------------- BUILD QUESTION NAVIGATION ------------------------------
     let navHtml = '<div id="questionNav"><h3>Questions</h3>';
-    for (let i = 0; i < ans_resp.length; i++) {
+    for (let i = 0; i < 50; i++) {
+    // for (let i = 0; i < ans_resp.length; i++) {
         const isAnswered = ans_resp[i] !== null;
         navHtml += `<button class="nav-button ${isAnswered ? 'answered' : 'unanswered'}" data-qno="${i + 1}">${i + 1}</button>`;
     }
@@ -567,8 +568,7 @@ function displayQuestion() {
     ${navHtml}
     <div class="Stats">
         <p id="head"></p>
-        <p id="ans">Answered: ${attempt}</p>
-        <p id="unans">Unanswered: ${unattempt}</p>
+        <p >🟩Answered: ${attempt}<br>🟥Unanswered: ${unattempt}</p>
     </div>
     <div id="question">
         <div id="statement">${currentquestion.qno}) ${currentquestion.statement}</div>
@@ -679,7 +679,8 @@ async function submitTest() {
     for (let i = 0; i < ans_resp.length; i++) {
         responses[i + 1] = ans_resp[i]; // q_no starts from 1
     }
-
+    activeStudent=JSON.parse(localStorage.getItem('activeStudent'));
+    console.log(activeStudent);
     const formData = new FormData();
     formData.append('key', current_test_key);
     formData.append('responses', JSON.stringify(responses));
