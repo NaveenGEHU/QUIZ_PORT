@@ -9,6 +9,7 @@ function openPage(url) {
 let current_test_key = ''; // Stores the active test key
 let Test = null;           // Linked list head for test questions
 let currentquestion = null;// Pointer to the currently displayed question
+let currentEditQuestion = null; // Pointer to the currently editing question
 let activeStudent;         // Stores the currently active student object
 let activeTeacher;         // Stores the currently active teacher object
 let ans_resp = [];         // Array to track student's answers
@@ -171,6 +172,17 @@ function QuestionNo() {
     }
 }
 
+// ------------------- ASSIGN QUESTION NUMBERS ----------------
+function assignQuestionNumbers() {
+    let current = Test;
+    let num = 1;
+    while (current) {
+        current.qno = num;
+        num++;
+        current = current.next;
+    }
+}
+
 // ------------------- ADD QUESTION EVENT LISTENER ----------------
 const addQuestion = document.getElementById("add_question_form");
 if (addQuestion) {
@@ -201,6 +213,7 @@ function addquestion() {
     // If first question, initialize Test linked list
     if (!Test) {
         Test = new Question("", statement, opt1, opt2, opt3, opt4, ans);
+        assignQuestionNumbers();
         QuestionNo();
         document.getElementById("add_question_form").reset();
         return;
@@ -214,8 +227,145 @@ function addquestion() {
     last.next = new Question("", statement, opt1, opt2, opt3, opt4, ans);
     last.next.prev = last;
 
+    assignQuestionNumbers();
     QuestionNo();
     document.getElementById("add_question_form").reset();
+}
+
+// ------------------- VIEW/EDIT QUESTIONS ----------------
+function viewEditQuestions() {
+    if (!Test) {
+        alert("No questions added yet!");
+        return;
+    }
+    document.getElementById("createquestion_container").style.display = "none";
+    document.getElementById("edit_container").style.display = "block";
+    currentEditQuestion = Test; // Start with first question
+    displayEditQuestion(currentEditQuestion);
+}
+
+// ------------------- BACK TO ADD QUESTIONS ----------------
+function backToAdd() {
+    document.getElementById("edit_container").style.display = "none";
+    document.getElementById("createquestion_container").style.display = "block";
+}
+
+// ------------------- DISPLAY EDIT QUESTION ----------------
+function displayEditQuestion(question) {
+    const displayDiv = document.getElementById("edit_question_display");
+    displayDiv.innerHTML = `
+        <form id="edit_question_form">
+            <label for="edit_question">Question <span>${question.qno}</span></label>
+            <input type="text" id="edit_question" value="${question.statement}" required><br>
+            <label for="edit_opt1">Option A</label>
+            <input type="text" id="edit_opt1" value="${question.optionA}" required><br>
+            <label for="edit_opt2">Option B</label>
+            <input type="text" id="edit_opt2" value="${question.optionB}" required><br>
+            <label for="edit_opt3">Option C</label>
+            <input type="text" id="edit_opt3" value="${question.optionC}" required><br>
+            <label for="edit_opt4">Option D</label>
+            <input type="text" id="edit_opt4" value="${question.optionD}" required><br>
+            <h2>Correct Option</h2>
+            <label><input type="radio" name="edit_correct_answer" value="A" ${question.answer === 'A' ? 'checked' : ''}> Option A</label>
+            <label><input type="radio" name="edit_correct_answer" value="B" ${question.answer === 'B' ? 'checked' : ''}> Option B</label>
+            <label><input type="radio" name="edit_correct_answer" value="C" ${question.answer === 'C' ? 'checked' : ''}> Option C</label>
+            <label><input type="radio" name="edit_correct_answer" value="D" ${question.answer === 'D' ? 'checked' : ''}> Option D</label><br>
+            <button type="button" onclick="saveEdit(${question.qno})">Save Changes</button>
+            <button type="button" onclick="deleteQuestion(${question.qno})">Delete Question</button>
+            <button type="button" onclick="prevEditQuestion()">Previous</button>
+            <button type="button" onclick="nextEditQuestion()">Next</button>
+        </form>
+    `;
+}
+
+// ------------------- SAVE EDIT ----------------
+function saveEdit(qno) {
+    const statement = document.getElementById("edit_question").value;
+    const opt1 = document.getElementById("edit_opt1").value;
+    const opt2 = document.getElementById("edit_opt2").value;
+    const opt3 = document.getElementById("edit_opt3").value;
+    const opt4 = document.getElementById("edit_opt4").value;
+    const corr = document.getElementsByName("edit_correct_answer");
+    let ans = '';
+    for (let a = 0; a < corr.length; a++) {
+        if (corr[a].checked) {
+            ans = corr[a].value;
+            break;
+        }
+    }
+
+    // Find and update the question in linked list
+    let current = Test;
+    while (current) {
+        if (current.qno == qno) {
+            current.statement = statement;
+            current.optionA = opt1;
+            current.optionB = opt2;
+            current.optionC = opt3;
+            current.optionD = opt4;
+            current.answer = ans;
+            alert("Question updated!");
+            return;
+        }
+        current = current.next;
+    }
+}
+
+// ------------------- DELETE QUESTION ----------------
+function deleteQuestion(qno) {
+    if (!confirm("Are you sure you want to delete this question?")) return;
+
+    if (Test.qno == qno) {
+        // Delete head
+        Test = Test.next;
+        if (Test) Test.prev = null;
+    } else {
+        let current = Test;
+        while (current.next) {
+            if (current.next.qno == qno) {
+                current.next = current.next.next;
+                if (current.next) current.next.prev = current;
+                break;
+            }
+            current = current.next;
+        }
+    }
+    assignQuestionNumbers(); // Reassign question numbers after deletion
+    QuestionNo(); // Update question count display
+    // Go to next or previous if possible
+    let nextQ = findQuestionByQno(qno);
+    if (!nextQ) nextQ = findQuestionByQno(qno - 1);
+    if (nextQ) displayEditQuestion(nextQ);
+    else backToAdd(); // No questions left
+}
+
+// ------------------- FIND QUESTION BY QNO ----------------
+function findQuestionByQno(qno) {
+    let current = Test;
+    while (current) {
+        if (current.qno == qno) return current;
+        current = current.next;
+    }
+    return null;
+}
+
+// ------------------- NAVIGATION IN EDIT ----------------
+function nextEditQuestion() {
+    if (currentEditQuestion.next) {
+        currentEditQuestion = currentEditQuestion.next;
+        displayEditQuestion(currentEditQuestion);
+    } else {
+        alert("Last question!");
+    }
+}
+
+function prevEditQuestion() {
+    if (currentEditQuestion.prev) {
+        currentEditQuestion = currentEditQuestion.prev;
+        displayEditQuestion(currentEditQuestion);
+    } else {
+        alert("First question!");
+    }
 }
 
 // ------------------- QUESTION CLASS ----------------
@@ -324,7 +474,10 @@ async function registerStudent() {
         alert('Roll number must be numeric!');
         return;
     }
-
+    if(newcourse==="NONE"){
+        alert('Select the course');
+        return;
+    }
     // ---------------- SEND STUDENT DATA TO BACKEND AS JSON ----------------
     const data = new student(newid, newname, newpass, newsec, newcourse, newrollno);
 
@@ -407,11 +560,12 @@ async function teacher_register() {
     const teacher_pass = document.getElementById("teacher_password").value.trim();
 
     // ---------------- SEND TEACHER DATA TO BACKEND AS JSON ----------------
-    const data = {
-        name: teacher_fn,
-        email: teacher_email,
-        password: teacher_pass
-    };
+    // const data = {
+    //     name: teacher_fn,
+    //     email: teacher_email,
+    //     password: teacher_pass
+    // };
+    const data=new teacher(teacher_fn,teacher_email,teacher_pass);
 
     const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_teacher.php', {
         method: 'POST',
@@ -556,8 +710,7 @@ function displayQuestion() {
 
     // ------------------------- BUILD QUESTION NAVIGATION ------------------------------
     let navHtml = '<div id="questionNav"><h3>Questions</h3>';
-    for (let i = 0; i < 50; i++) {
-    // for (let i = 0; i < ans_resp.length; i++) {
+    for (let i = 0; i < ans_resp.length; i++) {
         const isAnswered = ans_resp[i] !== null;
         navHtml += `<button class="nav-button ${isAnswered ? 'answered' : 'unanswered'}" data-qno="${i + 1}">${i + 1}</button>`;
     }

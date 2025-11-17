@@ -5,9 +5,9 @@ include 'JsonResponse.php';
 
 // Get JSON input
 $input = json_decode(file_get_contents('php://input'), true);
-$name = trim($input['name'] ?? '');
-$email = trim($input['email'] ?? '');
-$password = trim($input['password'] ?? '');
+$name = $input['full_name'] ;
+$email =$input['teacher_email'];
+$password =$input['teacher_password'];
 
 // Fetch all teachers
 $sql = "SELECT * FROM teacher";

@@ -13,7 +13,7 @@
     <div id="createquestion_container" >
         <h1 id="testCreation">Create a New Test</h1>
         <form id="add_question_form">
-            <label for="question">Question</label><label id ='qno'></label>
+            <label for="question">Question <span id='qno'></span></label>
             <input placeholder="Enter Question" id="question" type="text" required><br>
             <label for="opt1">Option A</label><input placeholder="Enter Option" id="opt1" type="text" required><br>
             <label for="opt2">Option B</label><input placeholder="Enter Option" id="opt2" type="text" required><br>
@@ -29,7 +29,15 @@
             <button class="allbutton" id="add_question_button" type="submit">Add Question</button>
         </form>
         <!-- <div id="popUp"></div> -->
+        <button class="allbutton" id="view_edit_button" onclick="viewEditQuestions()">View/Edit Questions</button>
         <button class="allbutton" id="create_test_button" >Create Test</button>
+    </div>
+    <div id="edit_container" style="display: none;">
+        <h1>Edit Questions</h1>
+        <div id="edit_question_display">
+            <!-- Question display will be inserted here -->
+        </div>
+        <button class="allbutton" id="back_to_add_button" onclick="backToAdd()">Back to Add Questions</button>
     </div>
    <script src="app.js"></script>
 </body>

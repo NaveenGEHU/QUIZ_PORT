@@ -1,19 +1,23 @@
-page.style {
+/* General Styles */
+body {
+    background: transparent; /* Fixed invalid 'background: top' */
+    font-family: cursive;
+}
+
+.page.style {
     padding: 3px;
     font-size: 60px;
     margin: 100px;
     text-align: center;
     color: #0f6560;
 }
+
+/* Headings */
 h1#test_key_page {
     font-family: ui-serif;
     font-size: 59px;
     margin: 63px;
     letter-spacing: 5px;
-}
-
-.option{
-    margin-bottom: 25px;
 }
 
 h1#title {
@@ -38,6 +42,34 @@ h1#headings {
     margin-top: 110px;
 }
 
+h1.Conttit {
+    font-size: 60px;
+}
+
+p {
+    font-size: 23px;
+}
+
+h1#tablehead {
+    color: #000000;
+    font-family: ui-monospace;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bolder;
+}
+
+h1#testCreation {
+    text-align: center;
+    font-family: serif;
+    font-size: 39px;
+}
+
+h1#afterSubmit {
+    text-align: center;
+    padding: 14%;
+}
+
+/* Buttons */
 button#teacher_button {
     border-radius: 13px;
     font-size: 32px;
@@ -63,47 +95,9 @@ button#student_button {
     padding: 6px;
 }
 
-
-body {background: top;font-family: cursive;}
-
-
-
-.login_container {
-    text-align: center;
-    color: black;
-}
-
-
-
-div#statement {
-    margin-bottom: 40px;
-    font-size: 22px;
-    font-weight: 530;
-    background: #f6fffead;
-    border: solid;
-    height: max-content;
-    width: auto;
-    border-radius: 10px;
-    padding: 20px;
-}
-
-label {
-    outline: 144px;
-    cursor: pointer;
-    font-size: 22px;
-    padding: 7px;
-    border-radius: 10px;
-}
-
-
-div#question {
-    margin-top: -29px;
-    margin-right: 400px;
-    padding-left: 10%;
-    padding-top: 3%;
-}
-
-button#previous_button,#next_button,#endTest {
+button#previous_button,
+#next_button,
+#endTest {
     font-family: cursive;
     padding: 7px;
     width: 11%;
@@ -117,9 +111,13 @@ button#previous_button,#next_button,#endTest {
     margin-bottom: 0%;
 }
 
-button#previous_button {margin-left: 2%;}
+button#previous_button {
+    margin-left: 2%;
+}
 
-button#next_button {margin-left: 70%;}
+button#next_button {
+    margin-left: 70%;
+}
 
 button#endTest {
     margin-left: 8%;
@@ -127,37 +125,141 @@ button#endTest {
     position: absolute;
 }
 
-tr {background: lightblue;}
-
-table.styled-table {
-    margin: auto;
+button#login_button,
+#registration_button {
+    border: none;
+    background: navy;
+    padding: 6px;
+    margin-right: 40px;
+    width: 20%;
+    font-size: 30px;
+    color: white;
+    border-radius: 100px;
+    margin-left: 40px;
 }
 
-
-h1#tablehead {
-    color: #000000;
-    font-family: ui-monospace;
-    text-align: center;
-    font-size: 50px;
-    font-weight: bolder;
+button#createTestButton,
+#viewresultButton {
+    height: 100px;
+    background: coral;
+    color: azure;
+    width: 22%;
+    padding: 19px;
+    font-family: cursive;
+    margin: 61px;
+    border-radius: 15px;
+    font-size: 46px;
 }
 
-thead {font-size: 25px;font-family: -webkit-body;}
-
-tbody {
-    font-size: 17px;
+button.allbutton {
+    color: snow;
+    height: 50px;
+    font-size: 27px;
+    border: none;
+    width: 28%;
+    border-radius: 16px;
+    font-family: cursive;
+    background-color: #b1b1ba;
 }
 
+button#showresultButton {
+    width: 14%;
+    background: cadetblue;
+    height: 51px;
+}
 
+button#create_test_button {
+    right: 10px;
+    top: 11px;
+    background: red;
+    position: absolute;
+    width: 13%;
+}
 
+button#add_question_button {
+    margin-left: 37%;
+    width: 20%;
+    margin-top: 15px;
+    background-color: #226b6d;
+}
 
+button#confirm_button {
+    background-color: #a59c9c;
+    border: none;
+    padding: 10px;
+    font-size: 23px;
+    border-radius: 12px;
+    color: white;
+}
 
+button#start_button {
+    color: white;
+    background-color: #057093;
+    border: none;
+    border-radius: 7px;
+    font-size: 27px;
+    padding: 9px;
+    width: 13%;
+}
 
+button {
+    cursor: pointer;
+}
+
+/* Hover Effects */
+#login_button:hover,
+#student_button:hover,
+#teacher_button:hover,
+#registration_button:hover,
+#endTest:hover,
+#next_button:hover,
+#previous_button:hover {
+    background-color: #2a8adf;
+}
+
+#createTestButton:hover,
+#viewresultButton:hover {
+    background-color: #ff7f505c;
+    color: #00000085;
+}
+
+#showresultButton:hover {
+    color: #000000ab;
+    background: #5f9ea075;
+}
+
+select#sortingDrawer:hover {
+    color: #000000ab;
+    background: #5f9ea075;
+}
+
+#create_test_button:hover {
+    color: #0000009e;
+    background-color: #ff000094;
+}
+
+#add_question_button:hover {
+    color: #000000a8;
+    background-color: #5f9ea0a8;
+}
+
+#start_button:hover {
+    color: #f0ebeb;
+    background-color: #51d0fa;
+}
+
+/* Forms and Inputs */
 form#student_login_form {
     padding-top: 10px;
 }
 
+form#teacher_login_form {
+    padding-top: 40px;
+}
 
+form#add_question_form {
+    padding: 2%;
+}
 
 input {
     width: 20%;
@@ -178,128 +280,9 @@ input {
     border: none;
 }
 
-form#teacher_login_form {
-    padding-top: 40px;
+input.option {
+    width: 16px;
 }
-
-button#login_button, #registration_button {
-    border: none;
-    background: navy;
-    padding: 6px;
-    margin-right: 40px;
-    width: 20%;
-    font-size: 30px;
-    color: white;
-    border-radius: 100px;
-    margin-left: 40px;
-}
-
-h1.Conttit {
-    font-size: 60px;
-}
-
-p {
-    font-size: 23px;
-}
-
-.registration_container {
-    margin: auto;
-    text-align: center;
-}
-
-
-
-div#teacherdashboard {
-    margin-top: 4%;
-    text-align: center;
-}
-
-button#createTestButton, #viewresultButton {height: 100px;background: coral;color: azure;width: 22%;padding: 19px;font-family: cursive;margin: 61px;border-radius: 15px;font-size: 46px;}
-
-
-
-#login_button:hover,#student_button:hover,#teacher_button:hover,#registration_button:hover,#endTest:hover,#next_button:hover,#previous_button:hover{
-    background-color:#2a8adf;
-}
-
-#createTestButton,#viewresult,
-
-button {
-    cursor: pointer;
-}
-
-
-
-input.option {width: 16px;}
-
-
-div#keyTag {
-    font-family: auto;
-    font-size: 24px;
-    text-align: center;
-}
-
-
-
-
-
-.Stats {
-    div#status {
-    margin-top: 9%;
-    margin-left: 74%;
-    height: 169px;
-    width: 17%;
-    border: solid;
-    text-align: center;
-};
-    div#status {
-    margin-top: 9%;
-    margin-left: 74%;
-    height: 169px;
-    width: 17%;
-    border: solid;
-    text-align: center;
-};
-    div#status {
-    margin-top: 9%;
-    margin-left: 74%;
-    height: 169px;
-    width: 17%;
-    border: solid;
-    text-align: center;
-};
-    div#status {
-    margin-top: 9%;
-    margin-left: 74%;
-    height: 169px;
-    width: 17%;
-    border: solid;
-    text-align: center;
-};
-    
-    width: 15%;height: 34%;/* border: solid; */margin-top: 19%;padding: 2%;margin-left: 75%;position: absolute;
-    
-}
-
-
-p#head {
-    font-size: 46px;
-    margin-top: -5%;
-    font-family: system-ui;
-    font-weight: 700;
-}
-
-
-p#ans {
-    color: green;
-    padding-top: 7px;
-}
-
-p#unans {
-    color: red;
-}
-
-
 
 input#testkey {
     margin-top: 10px;
@@ -307,131 +290,19 @@ input#testkey {
     height: 43px;
 }
 
-button#start_button {
-    color: white;
-    background-color: #057093;
-    border: none;
-    border-radius: 7px;
-    font-size: 27px;
-    padding: 9px;
-    width: 13%;
-}
-
 input#question {
     width: -webkit-fill-available;
     padding: 16px;
 }
 
-form#add_question_form {padding: 2%;}
-
-
-h1#testCreation {
-    text-align: center;
-    font-family: serif;
-    font-size: 39px;
-}
-
-
-select#sortingDrawer {
-    font-family: cursive;
-    padding: 2px;
-    text-align: center;
-    width: 21%;
-    font-size: 36px;
-    color: white;
-    background-color: cadetblue;
-    border: none;
-    cursor: pointer;
-    border-radius: 16px;
-}
-
-button.allbutton {
-    color: snow;
-    height: 50px;
-    font-size: 27px;
-    border: none;
-    width: 28%;
-    border-radius: 16px;
-    font-family: cursive;
-    background-color: #b1b1ba;
-}
-
-
-button#showresultButton {
-    width: 14%;
-    background: cadetblue;
-    height: 51px;
-}
-
-h1#afterSubmit {
-    text-align: center;
-    padding: 14%;
-}
-
-button#showresultButton:hover {
-    color: #000000ab;
-    background: #5f9ea075;
-}
-
-select#sortingDrawer:hover {
-    color: #000000ab;
-    background: #5f9ea075;
-}
-
-button#createTestButton:hover,button#viewresultButton:hover {background-color: #ff7f505c;color: #00000085;}
-
-input#opt1,input#opt2,input#opt3,input#opt4 {width: 90%;padding: 0px;height: 43px;margin: 10px;}
-
-
-#add_question_button {
-    margin-left: 37%;
-    width: 20%;
-    margin-top: 15px;
-    background-color: #226b6d;
-}
-
-button#create_test_button {
-    background: red;
-    position: absolute;
-    margin-left: 84%;
-    margin-top: -41%;
-    width: 13%;
-}
-
-button#create_test_button:hover {
-    color: #0000009e;
-    background-color: #ff000094;
-}
-
-button#add_question_button:hover {
-    color: #000000a8;
-    background-color: #5f9ea0a8;
-}
-
-button#confirm_button {
-    background-color: #a59c9c;
-    border: none;
-    padding: 10px;
-    font-size: 23px;
-    border-radius: 12px;
-    color: white;
-}
-
-
-
-
-button#start_button:hover {color: #f0ebeb;background-color: #51d0fa;}
-
-div#container {
-    display: none;
-    padding: 21px;
-    text-align: center;
-    margin-top: 10%;
-    margin-left: 31%;
-    border-radius: 20px;
-    border: solid;
-    width: 34%;
-    height: 323px;
+input#opt1,
+input#opt2,
+input#opt3,
+input#opt4 {
+    width: 90%;
+    padding: 0px;
+    height: 43px;
+    margin: 10px;
 }
 
 input.question-correct-answer {
@@ -447,39 +318,120 @@ input.question-correct-answer {
     padding: 6px;
     font-family: cursive;
 }
+
+/* Selects */
+select#sortingDrawer {
+    font-family: cursive;
+    padding: 2px;
+    text-align: center;
+    width: 21%;
+    font-size: 36px;
+    color: white;
+    background-color: cadetblue;
+    border: none;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+/* Containers and Layouts */
+.login_container {
+    text-align: center;
+    color: black;
+}
+
+.registration_container {
+    margin: auto;
+    text-align: center;
+}
+
+div#statement {
+    margin-bottom: 40px;
+    font-size: 22px;
+    font-weight: 530;
+    background: #f6fffead;
+    border: solid;
+    height: max-content;
+    width: auto;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+div#question {
+    margin-top: -29px;
+    margin-right: 400px;
+    padding-left: 10%;
+    padding-top: 3%;
+}
+
+div#teacherdashboard {
+    margin-top: 4%;
+    text-align: center;
+}
+
+div#keyTag {
+    font-family: auto;
+    font-size: 24px;
+    text-align: center;
+}
+
+div#container {
+    display: none;
+    padding: 21px;
+    text-align: center;
+    margin-top: 10%;
+    margin-left: 31%;
+    border-radius: 20px;
+    border: solid;
+    width: 34%;
+    height: 323px;
+}
+
 #TestKeyBox {
     position: absolute;
-}  
-
-.key-table th {
-  background-color: #f61515;
-  color: white;
-  padding: 12px 15px;
-  text-align: left;
-font-family:sans-serif;
 }
 
-.key-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
+/* Stats Section - Removed duplicates */
+.Stats {
+    width: 15%;
+    height: 34%;
+    margin-top: 19%;
+    padding: 2%;
+    margin-left: 75%;
+    position: absolute;
 }
 
-.key-table tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
+div#status {
+    margin-top: 9%;
+    margin-left: 74%;
+    height: 169px;
+    width: 17%;
+    border: solid;
+    text-align: center;
 }
 
-.key-table tbody tr:nth-child(odd) {
-  background-color: #ffffff;
+p#head {
+    font-size: 46px;
+    margin-top: -5%;
+    font-family: system-ui;
+    font-weight: 700;
 }
 
-.key-table tbody tr:hover {
-  background-color: #ddd;
+p#ans {
+    color: green;
+    padding-top: 7px;
 }
 
+p#unans {
+    color: red;
+}
 
+/* Tables */
+table.styled-table {
+    margin: auto;
+}
 
 .styled-table {
-    border-collapse:collapse;
+    border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
     font-family: sans-serif;
@@ -499,7 +451,7 @@ font-family:sans-serif;
 }
 
 .styled-table tbody tr {
-    text-align:center;
+    text-align: center;
     border-bottom: 1px solid #dddddd;
 }
 
@@ -517,7 +469,51 @@ font-family:sans-serif;
     background-color: #f3f3f3;
 }
 
+.key-table th {
+    background-color: #f61515;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+.key-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.key-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.key-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.key-table tbody tr:hover {
+    background-color: #ddd;
+}
+
+tr {
+    background: lightblue;
+}
+
+thead {
+    font-size: 25px;
+    font-family: -webkit-body;
+}
+
+tbody {
+    font-size: 17px;
+}
+
+/* Navigation */
 #questionNav {
+    position: absolute;
+    margin-left: 77%;
+    width: 18%;
+    height: auto;
+    margin-top: 7%;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -552,34 +548,119 @@ font-family:sans-serif;
     opacity: 0.8;
 }
 
-#questionNav {position: absolute;margin-left: 77%;width: 18%;height: auto;margin-top: 7%;}
-
-#questionNav h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
+/* Options */
+.option {
+    margin-bottom: 25px;
 }
 
-.nav-button {
-    margin: 5px;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
+/* Labels */
+label {
+    outline: 144px;
     cursor: pointer;
-    font-size: 16px;
-    width: 40px;
-    height: 40px;
+    font-size: 22px;
+    padding: 7px;
+    border-radius: 10px;
 }
 
-.nav-button.answered {
-    background-color: #4CAF50; /* Green for answered */
-    color: white;
+/* Edit Container Styles - Matching Creation Form */
+#edit_container {
+    display: none;
+    text-align: center;
 }
 
-.nav-button.unanswered {
-    background-color: #f44336; /* Red for unanswered */
-    color: white;
+#edit_container h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
 }
 
-.nav-button:hover {
-    opacity: 0.8;
+#edit_question_display {
+    margin-top: 20px;
+}
+
+#edit_question_form {
+    padding: 2%;
+}
+
+#edit_question_form label {
+    display: inline;
+    font-size: 22px;
+    padding: 7px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#edit_question_form input[type="text"] {
+    width: -webkit-fill-available;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 20px;
+    height: auto;
+}
+
+#edit_question_form input#edit_opt1,
+#edit_question_form input#edit_opt2,
+#edit_question_form input#edit_opt3,
+#edit_question_form input#edit_opt4 {
+    width: 90%;
+    padding: 0px;
+    height: 43px;
+    margin: 10px;
+    font-size: 20px;
+}
+
+#edit_question_form h2 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+#edit_question_form label input[type="radio"] {
+    margin-right: 10px;
+    width: 16px;
+    height: 24px;
+}
+
+#edit_question_form button {
+    margin: 10px 5px;
+    font-size: 27px;
+    border: none;
+    width: 28%;
+    border-radius: 16px;
+    font-family: cursive;
+    color: snow;
+    height: 50px;
+    cursor: pointer;
+}
+
+/* Specific button colors */
+#edit_question_form button[onclick*="saveEdit"] {
+    background-color: #4CAF50; /* Green for Save */
+}
+
+#edit_question_form button[onclick*="saveEdit"]:hover {
+    background-color: #45a049;
+}
+
+#edit_question_form button[onclick*="deleteQuestion"] {
+    background-color: #f44336; /* Red for Delete */
+}
+
+#edit_question_form button[onclick*="deleteQuestion"]:hover {
+    background-color: #da190b;
+}
+
+#edit_question_form button[onclick*="prevEditQuestion"],
+#edit_question_form button[onclick*="nextEditQuestion"] {
+    background-color: #2196F3; /* Blue for Navigation */
+}
+
+#edit_question_form button[onclick*="prevEditQuestion"]:hover,
+#edit_question_form button[onclick*="nextEditQuestion"]:hover {
+    background-color: #0b7dda;
+}
+button#view_edit_button {
+    position: absolute;
+    top: 18px;
+    background: red;
 }
