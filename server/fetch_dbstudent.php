@@ -3,12 +3,12 @@ header('Content-Type: application/json');
 include "conn.php";
 include "JsonResponse.php";
 
-// Handle login
+// ---------------------- login
 $input = json_decode(file_get_contents('php://input'), true);
 $id = trim($input['id'] ?? '');
 $password = trim($input['password'] ?? '');
 
-// Fetch all students
+// -------------------------------Fetch all students
 $sql = "SELECT * FROM student";
 $result = mysqli_query($conn, $sql);
 
@@ -18,13 +18,12 @@ if (!$result) {
     exit;
 }
 
-// Build Hash Table (ID → Row)
-$hash = [];
+//-------------------------- Build Hash Table (ID → Row)
+$hash = [];                                      // Array
 while ($row = mysqli_fetch_assoc($result)) {
     $hash[$row['id']] = $row;
 }
 
-// Direct lookup without isset()
 $user = $hash[$id] ?? null;
 
 // Validate login

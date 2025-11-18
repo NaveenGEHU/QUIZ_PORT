@@ -1,36 +1,106 @@
 /* General Styles */
 body {
     background: transparent; /* Fixed invalid 'background: top' */
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+button#downloadBtn:hover {
+    opacity: 60%;
+}
+button#downloadBtn {
+    color: white;
+    background: crimson;
+    position: absolute;
+    top: 15%;
+    right: 95px;
+    border: none;
+    width: 8%;
+    font-size: larger;
+    height: 6%;
+    font-family: unset;
+    border-radius: 10px;
+}
+#nav-logo {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Times New Roman', serif;
+    cursor: pointer;
+}
+
+#nav-links {
+    display: flex;
+    gap: 28px;
+    margin-left: 68%;
+}
+
+#nav-links a {
+    color: white;
+    text-decoration: none;
+    font-family: 'Times New Roman', serif;
+    font-size: 16px;
+}
+
+#nav-links a:hover {
+    text-decoration: underline;
+}
+
+body {
+    padding-top: 60px;
 }
 
 .page.style {
     padding: 3px;
     font-size: 60px;
-    margin: 100px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-left: 0;
+    margin-right: 0;
     text-align: center;
     color: #0f6560;
 }
 
 /* Headings */
 h1#test_key_page {
-    font-family: ui-serif;
+    font-family: 'Times New Roman', serif;
     font-size: 59px;
-    margin: 63px;
-    letter-spacing: 5px;
+    margin-top: 63px;
+    margin-bottom: 63px;
+    margin-left: 0;
+    margin-right: 0;
 }
-
+label#testkey_ {
+    margin: -8px;
+    position: absolute;
+    font-size: x-large;
+    left: 40%;
+}
 h1#title {
     margin-top: 60px;
     text-align: center;
     font-size: 90px;
     color: cadetblue;
-    font-family: auto;
+    font-family: 'Times New Roman', serif;
 }
 
 p#title_body {
     font-size: 23px;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     text-align: center;
 }
 
@@ -38,7 +108,7 @@ h1#headings {
     font-size: 40px;
     text-align: center;
     color: unset;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     margin-top: 110px;
 }
 
@@ -52,7 +122,7 @@ p {
 
 h1#tablehead {
     color: #000000;
-    font-family: ui-monospace;
+    font-family: 'Times New Roman', serif;
     text-align: center;
     font-size: 50px;
     font-weight: bolder;
@@ -60,7 +130,7 @@ h1#tablehead {
 
 h1#testCreation {
     text-align: center;
-    font-family: serif;
+    font-family: 'Times New Roman', serif;
     font-size: 39px;
 }
 
@@ -75,30 +145,35 @@ button#teacher_button {
     font-size: 32px;
     background: yellowgreen;
     color: white;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     cursor: pointer;
     width: 14%;
     padding: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 651px;
+    margin-right: 0;
 }
 
 button#student_button {
+    margin-top: 0;
     margin-bottom: 80px;
+    margin-left: 651px;
+    margin-right: 0;
     border-radius: 13px;
     font-size: 32px;
     background: yellowgreen;
     color: white;
     width: 14%;
     cursor: pointer;
-    font-family: cursive;
-    margin-left: 651px;
+    font-family: 'Times New Roman', serif;
     padding: 6px;
 }
 
 button#previous_button,
 #next_button,
 #endTest {
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     padding: 7px;
     width: 11%;
     font-size: 23px;
@@ -112,16 +187,24 @@ button#previous_button,
 }
 
 button#previous_button {
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 2%;
+    margin-right: 0;
 }
 
 button#next_button {
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 70%;
+    margin-right: 0;
 }
 
 button#endTest {
-    margin-left: 8%;
     margin-top: -1%;
+    margin-bottom: 0;
+    margin-left: 8%;
+    margin-right: 0;
     position: absolute;
 }
 
@@ -130,12 +213,14 @@ button#login_button,
     border: none;
     background: navy;
     padding: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 40px;
     margin-right: 40px;
     width: 20%;
     font-size: 30px;
     color: white;
     border-radius: 100px;
-    margin-left: 40px;
 }
 
 button#createTestButton,
@@ -145,8 +230,11 @@ button#createTestButton,
     color: azure;
     width: 22%;
     padding: 19px;
-    font-family: cursive;
-    margin: 61px;
+    font-family: 'Times New Roman', serif;
+    margin-top: 61px;
+    margin-bottom: 61px;
+    margin-left: 0;
+    margin-right: 0;
     border-radius: 15px;
     font-size: 46px;
 }
@@ -158,7 +246,7 @@ button.allbutton {
     border: none;
     width: 28%;
     border-radius: 16px;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     background-color: #b1b1ba;
 }
 
@@ -169,18 +257,18 @@ button#showresultButton {
 }
 
 button#create_test_button {
-    right: 10px;
-    top: 11px;
+    right: 4%;
+    top: 10%;
     background: red;
     position: absolute;
     width: 13%;
 }
 
 button#add_question_button {
-    margin-left: 37%;
-    width: 20%;
-    margin-top: 15px;
-    background-color: #226b6d;
+    right: 119px;
+    width: 14%;
+    position: absolute;
+    background: #226b6d;
 }
 
 button#confirm_button {
@@ -188,14 +276,17 @@ button#confirm_button {
     border: none;
     padding: 10px;
     font-size: 23px;
+    background: cadetblue;
     border-radius: 12px;
-    color: white;
+    color: #ffffff;
+    margin-top: 14px;
 }
 
 button#start_button {
     color: white;
     background-color: #057093;
     border: none;
+    margin: 13px;
     border-radius: 7px;
     font-size: 27px;
     padding: 9px;
@@ -248,6 +339,18 @@ select#sortingDrawer:hover {
     background-color: #51d0fa;
 }
 
+button.allbutton:hover {
+    background-color: #999;
+}
+
+button#confirm_button:hover {
+    background-color: #888;
+}
+
+button#view_edit_button:hover {
+    background-color: #cc0000;
+}
+
 /* Forms and Inputs */
 form#student_login_form {
     padding-top: 10px;
@@ -257,9 +360,7 @@ form#teacher_login_form {
     padding-top: 40px;
 }
 
-form#add_question_form {
-    padding: 2%;
-}
+form#add_question_form {padding-left: 6%;padding-right: 6%;}
 
 input {
     width: 20%;
@@ -275,8 +376,10 @@ input {
     font-size: 25px;
     text-align: left;
     background: none;
-    margin-left: 40%;
+    margin-top: 0;
     margin-bottom: -29px;
+    margin-left: 40%;
+    margin-right: 0;
     border: none;
 }
 
@@ -286,7 +389,11 @@ input.option {
 
 input#testkey {
     margin-top: 10px;
-    width: 18%;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 20%;
+    text-align: center;
     height: 43px;
 }
 
@@ -302,11 +409,17 @@ input#opt4 {
     width: 90%;
     padding: 0px;
     height: 43px;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 input.question-correct-answer {
-    margin: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
     width: 88px;
     height: 24px;
     padding: 0px;
@@ -316,16 +429,16 @@ input.question-correct-answer {
     font-size: 23px;
     border-radius: 6px;
     padding: 6px;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
 }
 
 /* Selects */
 select#sortingDrawer {
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     padding: 2px;
     text-align: center;
     width: 21%;
-    font-size: 36px;
+    font-size: 35px;
     color: white;
     background-color: cadetblue;
     border: none;
@@ -358,6 +471,8 @@ div#statement {
 
 div#question {
     margin-top: -29px;
+    margin-bottom: 0;
+    margin-left: 0;
     margin-right: 400px;
     padding-left: 10%;
     padding-top: 3%;
@@ -365,6 +480,9 @@ div#question {
 
 div#teacherdashboard {
     margin-top: 4%;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
     text-align: center;
 }
 
@@ -379,7 +497,9 @@ div#container {
     padding: 21px;
     text-align: center;
     margin-top: 10%;
+    margin-bottom: 0;
     margin-left: 31%;
+    margin-right: 0;
     border-radius: 20px;
     border: solid;
     width: 34%;
@@ -387,6 +507,8 @@ div#container {
 }
 
 #TestKeyBox {
+    left: 33px;
+    top: 10%;
     position: absolute;
 }
 
@@ -395,14 +517,18 @@ div#container {
     width: 15%;
     height: 34%;
     margin-top: 19%;
-    padding: 2%;
+    margin-bottom: 0;
     margin-left: 75%;
+    margin-right: 0;
+    padding: 2%;
     position: absolute;
 }
 
 div#status {
     margin-top: 9%;
+    margin-bottom: 0;
     margin-left: 74%;
+    margin-right: 0;
     height: 169px;
     width: 17%;
     border: solid;
@@ -412,7 +538,7 @@ div#status {
 p#head {
     font-size: 46px;
     margin-top: -5%;
-    font-family: system-ui;
+    font-family: 'Times New Roman', serif;
     font-weight: 700;
 }
 
@@ -434,7 +560,7 @@ table.styled-table {
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: sans-serif;
+    font-family: 'Times New Roman', serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
@@ -474,7 +600,7 @@ table.styled-table {
     color: white;
     padding: 12px 15px;
     text-align: left;
-    font-family: sans-serif;
+    font-family: 'Times New Roman', serif;
 }
 
 .key-table td {
@@ -500,7 +626,7 @@ tr {
 
 thead {
     font-size: 25px;
-    font-family: -webkit-body;
+    font-family: 'Times New Roman', serif;
 }
 
 tbody {
@@ -510,11 +636,12 @@ tbody {
 /* Navigation */
 #questionNav {
     position: absolute;
-    margin-left: 77%;
-    width: 18%;
-    height: auto;
     margin-top: 7%;
     margin-bottom: 20px;
+    margin-left: 77%;
+    margin-right: 0;
+    width: 18%;
+    height: auto;
     text-align: center;
 }
 
@@ -550,7 +677,10 @@ tbody {
 
 /* Options */
 .option {
+    margin-top: 0;
     margin-bottom: 25px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /* Labels */
@@ -570,11 +700,17 @@ label {
 
 #edit_container h1 {
     font-size: 40px;
+    margin-top: 0;
     margin-bottom: 20px;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 #edit_question_display {
     margin-top: 20px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 #edit_question_form {
@@ -592,7 +728,10 @@ label {
 #edit_question_form input[type="text"] {
     width: -webkit-fill-available;
     padding: 16px;
+    margin-top: 0;
     margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
     border-radius: 8px;
     font-size: 20px;
     height: auto;
@@ -605,29 +744,38 @@ label {
     width: 90%;
     padding: 0px;
     height: 43px;
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
     font-size: 20px;
 }
 
 #edit_question_form h2 {
-    margin-top: 20px;
+    text-align: left;
+    margin-top: 5px;
     margin-bottom: 10px;
+    margin-left: 34px;
+    margin-right: 0;
     font-size: 20px;
 }
 
 #edit_question_form label input[type="radio"] {
-    margin-right: 10px;
+    margin-right: 5px;
     width: 16px;
     height: 24px;
 }
 
 #edit_question_form button {
-    margin: 10px 5px;
-    font-size: 27px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 25px;
     border: none;
-    width: 28%;
+    width: 13%;
     border-radius: 16px;
-    font-family: cursive;
+    font-family: 'Times New Roman', serif;
     color: snow;
     height: 50px;
     cursor: pointer;
@@ -660,7 +808,10 @@ label {
     background-color: #0b7dda;
 }
 button#view_edit_button {
+    left: 89px;
+    width: 15%;
     position: absolute;
-    top: 18px;
+    height: 57px;
     background: red;
+    bottom: 2%;
 }

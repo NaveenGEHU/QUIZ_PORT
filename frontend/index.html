@@ -5,10 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <h1 id ="title">QUIZ PORT</h1>
-    <p id ="title_body">Your Quiz Management Platform with easy quiz creation ,scores calculation, sorting features.</p>
 </head>
 <body>
+<nav id="navbar">
+    <div id="nav-logo" onclick="openPage('index.html')">QUIZ PORT</div>
+    <div id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="loginpageforstudent.html">Student Login</a>
+        <a href="loginpageforteacher.html">Teacher Login</a>
+    </div>
+</nav>
+<h1 id ="title">QUIZ PORT</h1>
+<p id ="title_body">Your Quiz Management Platform with easy quiz creation ,scores calculation, sorting features.</p>
 <div id ="first_page" class= " ">
 <h1 id="headings">Choose Your Role</h1>
 <button class="allbutton"  id="student_button" onclick="openPage('loginpageforstudent.html')">Student</button><br>

@@ -58,7 +58,7 @@ if (mysqli_query($conn, $query)) {
     $affected_rows = mysqli_affected_rows($conn);
     if ($affected_rows > 0) {
         $response = new JsonResponse();
-        $response->setSuccess(true)->setData('marks', $marks)->output();
+        $response->setSuccess(true)->output();
     } else {
         $response = new JsonResponse();
         $response->setSuccess(false)->setMessage('You have already submitted this test. Multiple submissions are not allowed.')->output();

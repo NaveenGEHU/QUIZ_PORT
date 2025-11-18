@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body onload="QuestionNo()">
+<nav id="navbar">
+    <div id="nav-logo" onclick="openPage('index.html')">QUIZ PORT</div>
+    <div id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="loginpageforstudent.html">Student Login</a>
+        <a href="loginpageforteacher.html">Teacher Login</a>
+    </div>
+</nav>
     <div id="container" >
 
     </div>
@@ -22,8 +30,8 @@
             <h2> Correct Option</h2>
             <label for="correct_optA"><input id="correct_optA" class='question-correct-answer'  name='correct_answer' value='A' type="radio" required> Option A </label>
             <label for="correct_optB"><input id="correct_optB" class='question-correct-answer' name='correct_answer' value='B' type="radio" required> Option B </label>
-            <label for="correct_optC"><input id="correct_optC" class='question-correct-answer' name='correct_answer' value='C' type="radio" required> Option C </label>
-            <label for="correct_optD"><input  id="correct_optD" class='question-correct-answer' name='correct_answer' value='D' type="radio" required> Option D </label>
+            <label for="correct_optC"><input id="correct_optC" class='question-correct-answer' name='correct_answer' value='C' type="radio" > Option C </label>
+            <label for="correct_optD"><input  id="correct_optD" class='question-correct-answer' name='correct_answer' value='D' type="radio" > Option D </label>
             
             <!-- <input id="correct_opt" placeholder="Answer - A, B, C or D" type="text" required><br> -->
             <button class="allbutton" id="add_question_button" type="submit">Add Question</button>

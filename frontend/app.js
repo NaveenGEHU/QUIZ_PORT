@@ -318,7 +318,8 @@ function deleteQuestion(qno) {
     if (Test.qno == qno) {
         // Delete head
         Test = Test.next;
-        if (Test) Test.prev = null;
+        if (Test)
+             Test.prev = null;
     } else {
         let current = Test;
         while (current.next) {
@@ -558,13 +559,6 @@ async function teacher_register() {
     const teacher_fn = document.getElementById("teacher_fullname").value.trim();
     const teacher_email = document.getElementById("teacher_email").value.trim();
     const teacher_pass = document.getElementById("teacher_password").value.trim();
-
-    // ---------------- SEND TEACHER DATA TO BACKEND AS JSON ----------------
-    // const data = {
-    //     name: teacher_fn,
-    //     email: teacher_email,
-    //     password: teacher_pass
-    // };
     const data=new teacher(teacher_fn,teacher_email,teacher_pass);
 
     const response = await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/register_teacher.php', {
@@ -577,7 +571,7 @@ async function teacher_register() {
     const result = await response.json();
 
     if (result.success) {
-        // ---------------- CREATE TEACHER OBJECT AND REDIRECT ----------------
+        // ---------------- CREATE TEACHER OBJECT  ----------------
         const newteacher = new teacher(teacher_fn, teacher_email, teacher_pass);
         document.getElementById("teacher_registration_form").reset();
         saveActiveTeacher(newteacher);
@@ -708,10 +702,10 @@ function displayQuestion() {
     Title = document.getElementById('keyTag');
     Title.innerHTML = `<h1>QUIZ   :   ${current_test_key}</h1>`;
 
-    // ------------------------- BUILD QUESTION NAVIGATION ------------------------------
+    // ------------------------- BUILD QUESTION NAVIGATION BLOCK ------------------------------
     let navHtml = '<div id="questionNav"><h3>Questions</h3>';
     for (let i = 0; i < ans_resp.length; i++) {
-        const isAnswered = ans_resp[i] !== null;
+        const isAnswered = (ans_resp[i] !== null);
         navHtml += `<button class="nav-button ${isAnswered ? 'answered' : 'unanswered'}" data-qno="${i + 1}">${i + 1}</button>`;
     }
     navHtml += '</div>';
@@ -850,7 +844,7 @@ async function submitTest() {
 
     const result = await response.json();
     if (result.success) {
-        alert(`Test submitted successfully! Your marks: ${result.marks}`);
+        alert(`Test submitted successfully!`);
         openPage('studentdashboard.html');
     } else {
         alert('Failed to submit test: ' + result.message);
@@ -913,7 +907,6 @@ async function fetchResult(sorttype, sectionslected, courseselected) {
     form.append('sorttype', sorttype);
     form.append('section', sectionslected);
     form.append('course', courseselected);
-
     let response= await fetch('http://localhost/myprojects/GIT/QUIZ_PORT/server/fetch_marks.php', { method: 'POST', body: form });
     let text= await response.text();
     if(!text)
@@ -930,8 +923,8 @@ async function fetchResult(sorttype, sectionslected, courseselected) {
     studentsresult = [];
     for (let i = 0; i < data.length; i++) {
         studentsresult.push(data[i]);
-        studentsresult[i].rollno = Number(String(studentsresult[i].rollno).trim());
-        studentsresult[i].marks = Number(String(studentsresult[i].marks).trim()) ;
+        studentsresult[i].rollno = Number(studentsresult[i].rollno);
+        studentsresult[i].marks = Number(studentsresult[i].marks) ;
     }
 
 }
@@ -939,6 +932,7 @@ async function fetchResult(sorttype, sectionslected, courseselected) {
 // ------------------- DISPLAY RESULT TABLE ----------------
 function displayResult(arr) {
     const page = document.getElementById('viewpage');
+    
     let table = `
     <h1 id="tablehead">Score: ${current_test_key}</h1>
     <table class="styled-table">
@@ -968,33 +962,39 @@ function displayResult(arr) {
 
     table += `</tbody></table>`;
     page.innerHTML = table;
+    let download=`<button id="downloadBtn">Download CSV</button>`;
+    page.innerHTML+=download;
+
+    downldtrigger=document.getElementById('downloadBtn');
+    if(downldtrigger)
+    {
+        downldtrigger.addEventListener('click',()=>downloadCSV(arr, current_test_key));
+    }
 }
 
-// // ------------------- DOWNLOAD CSV FUNCTION ----------------
-// function downloadCSV(data, testKey) {
-//     if (data.length === 0) {
-//         alert("No data to download!");
-//         return;
-//     }
+// ------------------- CSV DOWNLOAD FUNCTION ----------------
+function downloadCSV(data, testKey) {
+    if (data.length === 0) {
+        alert("No data to download!");
+        return;
+    }
 
-//     // Create CSV header
-//     let csvContent = "Student ID,Name,Section,Course,Class Roll No,Marks\n";
+    let csv = "Student ID,Name,Section,Course,Class Roll No,Marks\n";
 
-//     // Add data rows
-//     data.forEach(row => {
-//         csvContent += `"${row.id}","${row.name}","${row.section}","${row.course}",${row.rollno},${row.marks}\n`;
-//     });
+    for (let i = 0; i < data.length; i++) {
+        let row = data[i];
+        csv += `"${row.id}","${row.name}","${row.section}","${row.course}",${row.rollno},${row.marks}\n`;
+    }
 
-//     // Create blob and download
-//     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-//     const link = document.createElement("a");
-//     const url = URL.createObjectURL(blob);
-//     link.setAttribute("href", url);
-//     link.setAttribute("download", `${testKey}_results.csv`);
-//     link.style.visibility = 'hidden';
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-// }
+    let blob = new Blob([csv], { type: "text/csv" });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement("a");
+    link.href = url;
+    link.download = `${testKey}_results.csv`;
+    link.click();
+
+  
+}
+
 
 
