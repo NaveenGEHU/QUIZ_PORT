@@ -4,7 +4,7 @@
 Quiz Port is an educational platform designed to provide students with a user-friendly environment for practicing quizzes in various subjects. The platform aims to enhance the learning experience by offering features that promote engagement and knowledge retention.
 
 ## Tech Stack
-- **Frontend:** React.js, HTML, CSS, JavaScript
+- **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB
 - **Deployment:** Heroku, GitHub Actions for CI/CD
